@@ -5,7 +5,6 @@ import 'celestial_body_widget.dart';
 import 'custom_page_routes.dart';
 import 'planets_details_page.dart';
 
-
 class PlanetPage extends StatefulWidget {
   final Planet currentPlanet;
 
@@ -35,9 +34,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
 
     _slideInAnimController =
         AnimationController(duration: Duration(milliseconds: 800), vsync: this);
-
-    _tabController =
-        TabController(length: widget.currentPlanet.moons.length, vsync: this);
 
     _slideInAnimController.forward();
     _onNavigationAnimController =
@@ -73,77 +69,19 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
-    if (widget.currentPlanet.moons.length > 0) {
-      if (_verticalDragStart.dy - details.globalPosition.dy > 50.0) {
-        _swipeAnimController.reverse();
-        _slideInAnimController.forward();
-      }
+    if (_verticalDragStart.dy - details.globalPosition.dy > 50.0) {
+      _swipeAnimController.reverse();
+      _slideInAnimController.forward();
+    }
 
-      if (_verticalDragStart.dy - details.globalPosition.dy < 0.0) {
-        _swipeAnimController.forward();
-        _slideInAnimController.reverse();
-      }
+    if (_verticalDragStart.dy - details.globalPosition.dy < 0.0) {
+      _swipeAnimController.forward();
+      _slideInAnimController.reverse();
     }
   }
 
   void _onVerticalDragEnd(DragEndDetails details) {
     _verticalDragStart = null;
-  }
-
-  Widget _buildMoons(Size screenSize) {
-    final double moonsWidgetHeight = 0.125 * screenSize.height;
-    return TabBarView(
-      controller: _tabController,
-      children: widget.currentPlanet.moons.map((Moon moon) {
-        return Stack(
-          overflow: Overflow.visible,
-          fit: StackFit.expand,
-          children: <Widget>[
-            Positioned(
-              top: 0.2 * moonsWidgetHeight,
-              right: 0.0,
-              left: 0.0,
-              bottom: -(0.15 * moonsWidgetHeight),
-              child: Hero(
-                tag: '${moon.name}',
-                child: CelestialBodyWidget(moon.vidAssetPath),
-              ),
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 200),
-              curve: Curves.ease,
-              right: 0.0,
-              left: 0.0,
-              top: 1.1 * moonsWidgetHeight * _swipeAnimController.value,
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 200),
-                opacity: _swipeAnimController.value.clamp(0.4, 1.0),
-                child: Hero(
-                  tag: '${moon.name}heading',
-                  child: Text(
-                    moon.name.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subhead
-                        .copyWith(color: Colors.white, letterSpacing: 10.0),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0.0,
-              right: screenSize.width * 0.3,
-              left: screenSize.width * 0.3,
-              child: FadeTransition(
-                opacity: _swipeAnimController,
-                child: _descriptionColumn(moon),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
-    );
   }
 
   Column _descriptionColumn(CelestialBody celestialBody) {
@@ -191,16 +129,7 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
     );
   }
 
-  Container _buildSwipeIndicator(bool swiped) {
-    return Container(
-      width: 5.0,
-      height: 5.0,
-      decoration: BoxDecoration(
-        color: swiped ? Colors.grey : Colors.white,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -222,10 +151,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
                 child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
               ),
             ),
-            PositionedTransition(
-              rect: _moonsRect(screenSize),
-              child: _buildMoons(screenSize),
-            ),
             Positioned(
               right: -160 + (10.0 * (_swipeAnimController.value)),
               top: -100,
@@ -246,21 +171,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            widget.currentPlanet.moons.length > 0
-                ? Positioned(
-                    top: screenSize.height * 0.65,
-                    bottom: screenSize.height * 0.325,
-                    right: 0.0,
-                    left: 0.0,
-                    child: Column(
-                      children: <Widget>[
-                        _buildSwipeIndicator(_swipeAnimController.value < 1.0),
-                        SizedBox(height: 3.0),
-                        _buildSwipeIndicator(_swipeAnimController.value > 0.0),
-                      ],
-                    ),
-                  )
-                : Container(),
             Positioned(
               bottom: 0.0,
               right: screenSize.width * 0.15,

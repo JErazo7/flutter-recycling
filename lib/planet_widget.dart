@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'model.dart';
-
 
 class PlanetWidget extends StatefulWidget {
   final Planet planet;
@@ -21,25 +18,12 @@ class _PlanetWidgetState extends State<PlanetWidget>
   final double moonOrbitRadius = 20.0;
   AnimationController _rotationController;
   AnimationController _moonOrbitLengthController;
-  Animation<double> _moonOrbitLength;
 
   @override
   void initState() {
     super.initState();
     _rotationController =
         AnimationController(duration: Duration(seconds: 4), vsync: this);
-    if (hasMoons) {
-      _rotationController.repeat();
-    }
-
-    _moonOrbitLengthController =
-        AnimationController(duration: Duration(milliseconds: 700), vsync: this)
-          ..addListener(() {
-            setState(() {});
-          });
-    _moonOrbitLength = Tween<double>(begin: 0.0, end: moonOrbitRadius)
-        .animate(_moonOrbitLengthController);
-    _moonOrbitLengthController.forward();
   }
 
   @override
@@ -55,8 +39,6 @@ class _PlanetWidgetState extends State<PlanetWidget>
     _rotationController.dispose();
     super.dispose();
   }
-
-  bool get hasMoons => widget.planet.moons.length != 0;
 
   Widget _buildCelestialBody({@required CelestialBody body}) {
     return Center(
@@ -74,24 +56,8 @@ class _PlanetWidgetState extends State<PlanetWidget>
   @override
   Widget build(BuildContext context) {
     final Planet planet = widget.planet;
-    final List<Moon> moons = planet.moons;
 
     final List<Widget> bodies = [_buildCelestialBody(body: planet)];
-
-    if (moons.length > 0 && widget.currentlyInMainPos) {
-      for (int i = 0; i < moons.length; i++) {
-        final double radians = (2 * pi / moons.length) * i;
-        final double dx = _moonOrbitLength.value * cos(radians);
-        final double dy = _moonOrbitLength.value * sin(radians);
-
-        bodies.add(
-          Transform.translate(
-            offset: Offset(dx, dy),
-            child: _buildCelestialBody(body: moons[i]),
-          ),
-        );
-      }
-    }
 
     return RotationTransition(
       turns: _rotationController,
