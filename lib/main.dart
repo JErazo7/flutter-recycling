@@ -4,14 +4,15 @@ import 'package:flutter_recycling/planet_page.dart';
 
 import 'model.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
   }
@@ -28,8 +29,9 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: PlanetPage(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+            child: PlanetPage(
           currentPlanet: Planet(
             name: 'Earth',
             color: Colors.blue,
@@ -45,6 +47,6 @@ class HomePageState extends State<HomePage> {
             imgAssetPath: 'assets/earth.jpg',
             vidAssetPath: 'assets/earth.webp',
           ),
-        ));
+        )));
   }
 }

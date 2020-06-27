@@ -109,6 +109,58 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
+          Positioned(
+              top: screenSize.width * 0.04,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(left: screenSize.width * 0.04),
+                      child: Text(
+                        '''What are you 
+recycling today?''',
+                        style: Theme.of(context).textTheme.headline4.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.w600),
+                      )),
+                  SizedBox(height: screenSize.width * 0.02),
+                  Padding(
+                      padding: EdgeInsets.only(left: screenSize.width * 0.04),
+                      child: Text(
+                        'Recycle to save our planet',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.normal),
+                      )),
+                  SizedBox(height: screenSize.width * 0.04),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15.0),
+                          bottomRight: Radius.circular(15.0)),
+                    ),
+                    child: Container(
+                        width: screenSize.width * 0.86,
+                        height: screenSize.width * 0.14,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: screenSize.width * 0.04),
+                              child: Text('Manta, Ecuador',
+                                  style: Theme.of(context).textTheme.headline6),
+                            ),
+                            IconButton(
+                                icon: Icon(
+                                  Icons.gps_fixed,
+                                  color: Colors.black,
+                                  size: screenSize.width * 0.075,
+                                ),
+                                onPressed: null)
+                          ],
+                        )),
+                  )
+                ],
+              )),
           PositionedTransition(
             rect: _planetRect(screenSize),
             child: Hero(
