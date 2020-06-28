@@ -28,6 +28,7 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    updatePlace();
     _swipeAnimController =
         AnimationController(duration: Duration(milliseconds: 600), vsync: this)
           ..addListener(() {
@@ -103,10 +104,11 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
     );
   }
 
+  var address = "";
+
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    var city = "Current city";
 
     return Material(
       color: Colors.black,
@@ -136,6 +138,7 @@ recycling today?''',
                       )),
                   SizedBox(height: screenSize.width * 0.04),
                   Card(
+                    margin: EdgeInsets.only(left: 0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(15.0),
@@ -150,7 +153,7 @@ recycling today?''',
                             Padding(
                               padding: EdgeInsets.only(
                                   left: screenSize.width * 0.04),
-                              child: Text('Manta, Ecuador',
+                              child: Text(address,
                                   style: Theme.of(context).textTheme.headline6),
                             ),
                             IconButton(
@@ -159,21 +162,7 @@ recycling today?''',
                                   color: Colors.black,
                                   size: screenSize.width * 0.075,
                                 ),
-                                onPressed: () async {
-                                  Position position = await Geolocator()
-                                      .getCurrentPosition(
-                                          desiredAccuracy:
-                                              LocationAccuracy.high);
-
-                                  final coordinates = new Coordinates(
-                                      position.latitude, position.longitude);
-                                  var addresses = await Geocoder.local
-                                      .findAddressesFromCoordinates(
-                                          coordinates);
-                                  var first = addresses.first;
-                                  print(
-                                      "${first.featureName} : ${first.addressLine}");
-                                })
+                                onPressed: () async => updatePlace)
                           ],
                         )),
                   ),
@@ -265,6 +254,28 @@ Paper'''),
         ],
       ),
     );
+  }
+
+  void updatePlace() async {
+    setState(() {
+      address = "Loading..";
+    });
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    try {
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = addresses.first;
+      setState(() {
+        address = "${first.locality}, ${first.countryName}";
+      });
+    } catch (e) {
+      setState(() {
+        address = "Network failed..";
+      });
+    }
   }
 
   Widget stats(String content) {
