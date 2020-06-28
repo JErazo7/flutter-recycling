@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/model.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import 'celestial_body_widget.dart';
 import 'custom_page_routes.dart';
@@ -103,6 +106,7 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+    var city = "Current city";
 
     return Material(
       color: Colors.black,
@@ -155,10 +159,46 @@ recycling today?''',
                                   color: Colors.black,
                                   size: screenSize.width * 0.075,
                                 ),
-                                onPressed: null)
+                                onPressed: () async {
+                                  Position position = await Geolocator()
+                                      .getCurrentPosition(
+                                          desiredAccuracy:
+                                              LocationAccuracy.high);
+
+                                  final coordinates = new Coordinates(
+                                      position.latitude, position.longitude);
+                                  var addresses = await Geocoder.local
+                                      .findAddressesFromCoordinates(
+                                          coordinates);
+                                  var first = addresses.first;
+                                  print(
+                                      "${first.featureName} : ${first.addressLine}");
+                                })
                           ],
                         )),
-                  )
+                  ),
+                  SizedBox(height: screenSize.width * 0.04),
+                  Container(
+                      width: screenSize.width,
+                      child: FadeTransition(
+                        opacity: _slideInAnimController,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            stats('''250
+Plastic'''),
+                            divider(screenSize),
+                            stats('''350
+Metal'''),
+                            divider(screenSize),
+                            stats('''150
+Glass'''),
+                            divider(screenSize),
+                            stats('''450
+Paper'''),
+                          ],
+                        ),
+                      ))
                 ],
               )),
           PositionedTransition(
@@ -168,6 +208,30 @@ recycling today?''',
               child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
             ),
           ),
+          Positioned(
+              left: screenSize.width * 0.1,
+              bottom: screenSize.width * 0.45,
+              child: SleekCircularSlider(
+                appearance: CircularSliderAppearance(
+                  infoProperties: InfoProperties(
+                      bottomLabelText: '55%',
+                      bottomLabelStyle: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(color: Colors.white)),
+                  size: screenSize.width * 0.25,
+                ),
+                min: 0,
+                max: 100,
+                initialValue: 58,
+              )),
+          Positioned(
+              right: screenSize.width * 0.1,
+              bottom: screenSize.width * 0.45,
+              child: IconButton(
+                  icon: Icon(Icons.camera,
+                      color: Colors.white, size: screenSize.width * 0.15),
+                  onPressed: null)),
           Positioned(
             bottom: 0.0,
             right: screenSize.width * 0.15,
@@ -201,5 +265,24 @@ recycling today?''',
         ],
       ),
     );
+  }
+
+  Widget stats(String content) {
+    return Text(
+      content,
+      textAlign: TextAlign.center,
+      style:
+          Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.white),
+    );
+  }
+
+  Widget divider(Size screenSize) {
+    return Container(
+        height: screenSize.width * 0.15,
+        child: VerticalDivider(
+          color: Colors.white,
+          thickness: 2,
+          width: screenSize.width * 0.1,
+        ));
   }
 }

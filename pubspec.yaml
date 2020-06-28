@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  geolocator: ^5.3.2+2
+  geocoder: ^0.2.1
+  sleek_circular_slider: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
