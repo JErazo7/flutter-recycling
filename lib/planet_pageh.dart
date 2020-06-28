@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/model.dart';
-import 'celestial_body_widget.dart';
+import 'celestial_body_widget_h.dart';
 
 class PlanetPageh extends StatefulWidget {
   final Planet currentPlanet;
