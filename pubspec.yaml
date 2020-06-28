@@ -22,6 +22,8 @@ environment:
 
 dependencies:
   carousel_slider: ^2.2.1
+  maps_launcher: ^1.2.0
+  animated_background: ^1.0.5
   flutter:
     sdk: flutter
 

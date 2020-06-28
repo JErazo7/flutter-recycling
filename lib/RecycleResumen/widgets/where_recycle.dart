@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_recycling/RecycleResumen/widgets/location_item.dart';
-import 'package:flutter_recycling/RecycleResumen/widgets/location_item_properties.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
-import 'location_data.dart';
 
 class WhereRecycle extends StatefulWidget {
   @override
@@ -11,31 +9,26 @@ class WhereRecycle extends StatefulWidget {
 
 class _WhereRecycleState extends State<WhereRecycle> {
 
-  LocationItemProperties _locationItemProperties;
-
-  void getProperties (index) {
-    setState(() {
-      _locationItemProperties = LocationItemProperties(locationData: LocationData.getAll()[index]);
-    });
-  }
-
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _locationItemProperties = LocationItemProperties(locationData: LocationData.getAll()[0]);
-  }
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
         initialChildSize: 0.1,
         minChildSize: 0.1,
-        maxChildSize: 0.9,
+        maxChildSize: 0.1,
         builder: (context,scrollController) {
           return Container(
             decoration: BoxDecoration(
-                color: Colors.white,
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(55, 59, 68, 1),
+                    Color.fromRGBO(66, 134, 244, 1),
+
+                  ],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
                 borderRadius: BorderRadius.only(topRight: Radius.circular(40)),
                 border: Border.all(
                     color: Colors.black12
@@ -46,29 +39,25 @@ class _WhereRecycleState extends State<WhereRecycle> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 20, right: 40),
+                      padding: const EdgeInsets.only(top: 15, left: 20, right: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Where to recycle',
                             style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 30
                             ),
                           ),
-                          Icon(Icons.arrow_upward)
+                          IconButton(
+                            hoverColor: Colors.blue,
+                            autofocus: true,
+                            icon: Icon(Icons.arrow_forward, color: Colors.white,),
+                            onPressed: () => MapsLauncher.launchQuery('Recycling Center'),
+                          )
                         ],
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 40),
-                      height: 300,
-                      child: LocationItem(properties: getProperties),
-                    ),
-                    AnimatedSwitcher(
-                      duration: Duration(milliseconds: 500),
-                      child: _locationItemProperties,
                     )
                   ],
                 )

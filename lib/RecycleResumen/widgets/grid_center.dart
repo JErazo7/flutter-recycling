@@ -10,35 +10,68 @@ class GridCenter extends StatelessWidget {
     );
 
     return Container(
-      padding: EdgeInsets.all(50),
-      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.white
+          ]
+        )
+      ),
+      padding: EdgeInsets.fromLTRB(60, 0, 60, 120),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                children: [
-                  Text('250', style: numStyle,),
-                  Text('Plastic')
-                ],
-              ),
+              Text('Recycling points', style: numStyle.copyWith(color: Colors.white),)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+             Material(
+               borderRadius: BorderRadius.all(Radius.circular(15.0)),
+               elevation: 3,
+               child:  Container(
+                 padding: EdgeInsets.all(20),
+                 width: MediaQuery.of(context).size.width /4,
+                 child: Column(
+                   children: [
+                     Text('250', style: numStyle,),
+                     Text('Glass')
+                   ],
+                 ),
+               ),
+             ),
               Container(
                 width: 1,
                 height: 50,
                 color: Colors.grey,
               ),
-              Column(
-                children: [
-                  Text('250', style: numStyle,),
-                  Text('Glass')
-                ],
-              )
+              Material(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                borderOnForeground: true,
+                elevation: 3,
+                child:  Container(
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width /4,
+                  child: Column(
+                    children: [
+                      Text('250', style: numStyle,),
+                      Text('Paper')
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
                 color: Colors.grey,
@@ -55,25 +88,41 @@ class GridCenter extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Column(
-                children: [
-                  Text('250', style: numStyle,),
-                  Text('Paper')
-                ],
+              Material(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                elevation: 3,
+                child:  Container(
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width /4,
+                  child: Column(
+                    children: [
+                      Text('250', style: numStyle,),
+                      Text('Plastic')
+                    ],
+                  ),
+                ),
               ),
               Container(
                 width: 1,
                 height: 50,
                 color: Colors.grey,
               ),
-              Column(
-                children: [
-                  Text('250', style: numStyle,),
-                  Text('Metal')
-                ],
-              )
+              Material(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                elevation: 3,
+                child:  Container(
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width /4,
+                  child: Column(
+                    children: [
+                      Text('250', style: numStyle,),
+                      Text('Metal')
+                    ],
+                  ),
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

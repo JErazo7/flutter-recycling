@@ -11,10 +11,12 @@ class CarouselWithIndicatorDemo extends StatefulWidget {
 class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
   int _current = 0;
   final List<Widget> imageSliders = imgList.map((item) => Container(
-    child: Container(
-      margin: EdgeInsets.all(5.0),
+    padding: EdgeInsets.all(10),
+    child: Material(
+      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+      elevation: 5,
       child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
           child: Stack(
             children: <Widget>[
               Image.network(item.image, fit: BoxFit.cover, width: 1000.0),
@@ -60,7 +62,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
             options: CarouselOptions(
                 autoPlay: true,
                 enlargeCenterPage: true,
-                aspectRatio: 2.0,
+                aspectRatio: 2,
                 onPageChanged: (index, reason) {
                   setState(() {
                     _current = index;
@@ -68,22 +70,25 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
                 }
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: imgList.map((url) {
-              int index = imgList.indexOf(url);
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _current == index
-                      ? Colors.white
-                      : Colors.grey,
-                ),
-              );
-            }).toList(),
+          FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: imgList.map((url) {
+                int index = imgList.indexOf(url);
+                return Container(
+                  width: 8.0,
+                  height: 8.0,
+                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _current == index
+                        ? Colors.white
+                        : Colors.grey,
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ]
     );
