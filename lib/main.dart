@@ -1,109 +1,109 @@
-import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tflite/tflite.dart';
 
-import 'astronaut.dart';
-import 'model.dart';
-import 'planet_name.dart';
-import 'planet_selector.dart';
+void main() => runApp(MaterialApp(
+  home: MyApp(),
+));
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([ DeviceOrientation.portraitUp ]);
-    return MaterialApp(
-      home: HomePage(),
-    );
-  }
+  _MyAppState createState() => _MyAppState();
 }
 
-class HomePage extends StatefulWidget {
+class _MyAppState extends State<MyApp> {
+  List _outputs;
+  File _image;
+  bool _loading = false;
+
   @override
-  HomePageState createState() {
-    return new HomePageState();
-  }
-}
+  void initState() {
+    super.initState();
+    _loading = true;
 
-class HomePageState extends State<HomePage> {
-  final List<Planet> _planets = planets;
-  int _currentPlanetIndex = 2;
-  final StreamController _navigationStreamCntrllr =
-      StreamController.broadcast();
-
-  dispose() {
-    _navigationStreamCntrllr.close();
-    super.dispose();
-  }
-
-  _handleArrowClick(ClickDirection direction) {
-    setState(() {
-      switch (direction) {
-        case ClickDirection.Left:
-          _currentPlanetIndex--;
-          break;
-        case ClickDirection.Right:
-          _currentPlanetIndex++;
-          break;
-      }
+    loadModel().then((value) {
+      setState(() {
+        _loading = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: FractionalTranslation(
-              translation: Offset(0.0, 0.65),
-              child: PlanetSelector(
-                screenSize: screenSize,
-                planets: _planets,
-                currentPlanetIndex: _currentPlanetIndex,
-                onArrowClick: _handleArrowClick,
-                onPlanetClicked: () => _navigationStreamCntrllr.sink.add(null),
+      appBar: AppBar(
+        title: const Text('Teachable Machine Learning'),
+      ),
+      body: _loading
+          ? Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      )
+          : Container(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _image == null ? Container() : Image.file(_image),
+            SizedBox(
+              height: 20,
+            ),
+            _outputs != null
+                ? Text(
+              "${_outputs[0]["label"]}",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20.0,
+                background: Paint()..color = Colors.white,
               ),
-            ),
-          ),
-          Container(
-            height: screenSize.height * 0.8,
-            width: double.infinity,
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: RotatedBox(
-                    quarterTurns: 1,
-                    child: Container(
-                      width: 400.0,
-                      padding: EdgeInsets.only(left: 50.0),
-                      child: PlanetName(
-                        name: _planets[_currentPlanetIndex].name.toUpperCase(),
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Astronaut(
-                    size: screenSize,
-                    planets: _planets,
-                    currentPlanetIndex: _currentPlanetIndex,
-                    shouldNavigate: _navigationStreamCntrllr.stream,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+            )
+                : Container()
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: pickImage,
+        child: Icon(Icons.image),
       ),
     );
+  }
+
+  pickImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image == null) return null;
+    setState(() {
+      _loading = true;
+      _image = image;
+    });
+    classifyImage(image);
+  }
+
+  classifyImage(File image) async {
+    var output = await Tflite.runModelOnImage(
+      path: image.path,
+      numResults: 2,
+      threshold: 0.5,
+      imageMean: 127.5,
+      imageStd: 127.5,
+    );
+    setState(() {
+      _loading = false;
+      _outputs = output;
+    });
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+      model: "assets/model.tflite",
+      labels: "assets/dict.txt",
+    );
+  }
+
+  @override
+  void dispose() {
+    Tflite.close();
+    super.dispose();
   }
 }
