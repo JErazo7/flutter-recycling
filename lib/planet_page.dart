@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:html';
+
 import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/model.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:location/location.dart';
 
 import 'celestial_body_widget.dart';
 import 'custom_page_routes.dart';
@@ -21,6 +25,7 @@ class PlanetPage extends StatefulWidget {
 }
 
 class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
+  Location location;
   AnimationController _swipeAnimController;
   AnimationController _slideInAnimController;
   AnimationController _onNavigationAnimController;
@@ -29,6 +34,7 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    location = new Location();
     updatePlace();
     _swipeAnimController =
         AnimationController(duration: Duration(milliseconds: 600), vsync: this)
@@ -110,18 +116,17 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-
     return Material(
       color: Colors.black,
       child: AnimatedBackground(
-          behaviour: RandomParticleBehaviour(options: ParticleOptions(
-            particleCount: 300,
-            spawnMaxSpeed: 5.0,
-            spawnMinSpeed: 1.0,
-            spawnMaxRadius: 1.5,
-            spawnMinRadius: 1.0,
-            baseColor: Colors.white
-          )),
+          behaviour: RandomParticleBehaviour(
+              options: ParticleOptions(
+                  particleCount: 300,
+                  spawnMaxSpeed: 5.0,
+                  spawnMinSpeed: 1.0,
+                  spawnMaxRadius: 1.5,
+                  spawnMinRadius: 1.0,
+                  baseColor: Colors.white)),
           vsync: this,
           child: Stack(
             fit: StackFit.expand,
@@ -135,7 +140,7 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
                           padding:
                               EdgeInsets.only(left: screenSize.width * 0.04),
                           child: Text(
-                            '''What are you 
+                            '''What are you
 recycling today?''',
                             style: Theme.of(context)
                                 .textTheme
@@ -220,27 +225,28 @@ Paper'''),
                   child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
                 ),
               ),
-              Positioned(
-                  left: screenSize.width * 0.1,
-                  bottom: screenSize.width * 0.45,
-                  child: SleekCircularSlider(
-                    appearance: CircularSliderAppearance(
-                      infoProperties: InfoProperties(
-                          bottomLabelText: '55%',
-                          bottomLabelStyle: Theme.of(context)
-                              .textTheme
-                              .subtitle1
-                              .copyWith(color: Colors.white)),
-                      size: screenSize.width * 0.25,
-                    ),
-                    min: 0,
-                    max: 100,
-                    initialValue: 58,
-                  )),
+              // Positioned(
+              //     left: 5,
+              //     bottom: 2,
+              //     child: SleekCircularSlider(
+              //       appearance: CircularSliderAppearance(
+              //         infoProperties: InfoProperties(
+              //             bottomLabelText: '55%',
+              //             bottomLabelStyle: Theme.of(context)
+              //                 .textTheme
+              //                 .subtitle1
+              //                 .copyWith(color: Colors.white)),
+              //         size: 10,
+              //       ),
+              //       min: 0,
+              //       max: 100,
+              //       initialValue: 58,
+              //     )),
               Positioned(
                   right: screenSize.width * 0.1,
                   bottom: screenSize.width * 0.45,
                   child: IconButton(
+                      iconSize: screenSize.width * 0.15,
                       icon: Icon(Icons.camera,
                           color: Colors.white, size: screenSize.width * 0.15),
                       onPressed: null)),
@@ -281,20 +287,47 @@ Paper'''),
     setState(() {
       address = "Loading..";
     });
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-    final coordinates = new Coordinates(position.latitude, position.longitude);
     try {
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = addresses.first;
-      setState(() {
-        address = "${first.locality}, ${first.countryName}";
-      });
+      bool _serviceEnabled;
+      PermissionStatus _permissionGranted;
+      LocationData position;
+
+      _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
+          return;
+        }
+      }
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          return;
+        }
+      }
+      position = await location.getLocation();
+      if (kIsWeb) {
+        final resp = jsonDecode((await http.read(
+            'https://geocode.xyz/${position.latitude},${position.longitude}?json=1')));
+        setState(() {
+          address = "${resp['city']}, ${resp['country']}";
+        });
+      } else {
+        final coordinates =
+            new Coordinates(position.latitude, position.longitude);
+
+        var addresses =
+            await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        var first = addresses.first;
+        setState(() {
+          address = "${first.locality}, ${first.countryName}";
+        });
+      }
     } catch (e) {
+      print(e);
       setState(() {
-        address = "Network failed..";
+        address = "Error obtaining location";
       });
     }
   }

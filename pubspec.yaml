@@ -28,6 +28,8 @@ dependencies:
   sleek_circular_slider: ^1.1.0
  
   animated_background: ^1.0.5
+  location: ^3.0.2
+  http: ^0.12.1
 
 
   # The following adds the Cupertino Icons font to your application.
