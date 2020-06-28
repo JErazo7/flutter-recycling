@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recycling/Screen_camera.dart';
 import 'package:flutter_recycling/model.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:location/location.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import 'Screen_history.dart';
 import 'celestial_body_widget.dart';
+import 'custom_page_routes.dart';
 
 class PlanetPage extends StatefulWidget {
   final Planet currentPlanet;
@@ -79,33 +82,30 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
             height: 1.5,
           ),
         ),
-        SizedBox(height: 10.0)
-        // FlatButton(
-        //   child: Text(
-        //     'Read More',
-        //     style: TextStyle(
-        //       color: Colors.white54,
-        //       decoration: TextDecoration.underline,
-        //     ),
-        //   ),
-        //   onPressed: () {
-        //     _onNavigationAnimController.forward();
-        //     Navigator.of(context)
-        //         .push(
-        //       MyPageRoute(
-        //         transDuation: Duration(milliseconds: 600),
-        //         builder: (BuildContext context) {
-        //           return PlanetDetailsPage(
-        //             selected: celestialBody,
-        //           );
-        //         },
-        //       ),
-        //     )
-        //         .then((_) {
-        //       _onNavigationAnimController.reverse();
-        //     });
-        //   },
-        // ),
+        FlatButton(
+          child: Text(
+            'Read More',
+            style: TextStyle(
+              color: Colors.white54,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          onPressed: () {
+            _onNavigationAnimController.forward();
+            Navigator.of(context)
+                .push(
+              MyPageRoute(
+                transDuation: Duration(milliseconds: 600),
+                builder: (BuildContext context) {
+                  return History();
+                },
+              ),
+            )
+                .then((_) {
+              _onNavigationAnimController.reverse();
+            });
+          },
+        ),
       ],
     );
   }
@@ -250,10 +250,25 @@ Paper'''),
                   right: screenSize.width * 0.1,
                   bottom: screenSize.width * 0.65,
                   child: IconButton(
-                      iconSize: screenSize.width * 0.15,
-                      icon: Icon(Icons.camera,
-                          color: Colors.white, size: screenSize.width * 0.15),
-                      onPressed: null)),
+                    iconSize: screenSize.width * 0.15,
+                    icon: Icon(Icons.camera,
+                        color: Colors.white, size: screenSize.width * 0.15),
+                    onPressed: () {
+                      _onNavigationAnimController.forward();
+                      Navigator.of(context)
+                          .push(
+                        MyPageRoute(
+                          transDuation: Duration(milliseconds: 600),
+                          builder: (BuildContext context) {
+                            return ScreenCamera();
+                          },
+                        ),
+                      )
+                          .then((_) {
+                        _onNavigationAnimController.reverse();
+                      });
+                    },
+                  )),
               Positioned(
                 bottom: 0.0,
                 right: screenSize.width * 0.15,
