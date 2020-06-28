@@ -1,10 +1,15 @@
+import 'dart:convert';
+
+import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/model.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:location/location.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import 'celestial_body_widget.dart';
-import 'custom_page_routes.dart';
-import 'planets_details_page.dart';
-
 
 class PlanetPage extends StatefulWidget {
   final Planet currentPlanet;
@@ -18,7 +23,7 @@ class PlanetPage extends StatefulWidget {
 }
 
 class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
-  Offset _verticalDragStart;
+  Location location;
   AnimationController _swipeAnimController;
   AnimationController _slideInAnimController;
   AnimationController _onNavigationAnimController;
@@ -27,6 +32,8 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    location = new Location();
+    updatePlace();
     _swipeAnimController =
         AnimationController(duration: Duration(milliseconds: 600), vsync: this)
           ..addListener(() {
@@ -35,9 +42,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
 
     _slideInAnimController =
         AnimationController(duration: Duration(milliseconds: 800), vsync: this);
-
-    _tabController =
-        TabController(length: widget.currentPlanet.moons.length, vsync: this);
 
     _slideInAnimController.forward();
     _onNavigationAnimController =
@@ -60,92 +64,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
     ).animate(_swipeAnimController);
   }
 
-  Animation<RelativeRect> _moonsRect(Size screen) {
-    return RelativeRectTween(
-      begin: RelativeRect.fromLTRB(
-          0.0, screen.height * 0.45, 0.0, screen.height * 0.425),
-      end: RelativeRect.fromLTRB(-50.0, screen.height * 0.7, -50.0, 0.0),
-    ).animate(_swipeAnimController);
-  }
-
-  void _onVerticalDragStart(DragStartDetails details) {
-    _verticalDragStart = details.globalPosition;
-  }
-
-  void _onVerticalDragUpdate(DragUpdateDetails details) {
-    if (widget.currentPlanet.moons.length > 0) {
-      if (_verticalDragStart.dy - details.globalPosition.dy > 50.0) {
-        _swipeAnimController.reverse();
-        _slideInAnimController.forward();
-      }
-
-      if (_verticalDragStart.dy - details.globalPosition.dy < 0.0) {
-        _swipeAnimController.forward();
-        _slideInAnimController.reverse();
-      }
-    }
-  }
-
-  void _onVerticalDragEnd(DragEndDetails details) {
-    _verticalDragStart = null;
-  }
-
-  Widget _buildMoons(Size screenSize) {
-    final double moonsWidgetHeight = 0.125 * screenSize.height;
-    return TabBarView(
-      controller: _tabController,
-      children: widget.currentPlanet.moons.map((Moon moon) {
-        return Stack(
-          overflow: Overflow.visible,
-          fit: StackFit.expand,
-          children: <Widget>[
-            Positioned(
-              top: 0.2 * moonsWidgetHeight,
-              right: 0.0,
-              left: 0.0,
-              bottom: -(0.15 * moonsWidgetHeight),
-              child: Hero(
-                tag: '${moon.name}',
-                child: CelestialBodyWidget(moon.vidAssetPath),
-              ),
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 200),
-              curve: Curves.ease,
-              right: 0.0,
-              left: 0.0,
-              top: 1.1 * moonsWidgetHeight * _swipeAnimController.value,
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 200),
-                opacity: _swipeAnimController.value.clamp(0.4, 1.0),
-                child: Hero(
-                  tag: '${moon.name}heading',
-                  child: Text(
-                    moon.name.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subhead
-                        .copyWith(color: Colors.white, letterSpacing: 10.0),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0.0,
-              right: screenSize.width * 0.3,
-              left: screenSize.width * 0.3,
-              child: FadeTransition(
-                opacity: _swipeAnimController,
-                child: _descriptionColumn(moon),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
-    );
-  }
-
   Column _descriptionColumn(CelestialBody celestialBody) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -161,137 +79,279 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
             height: 1.5,
           ),
         ),
-        FlatButton(
-          child: Text(
-            'Read More',
-            style: TextStyle(
-              color: Colors.white54,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-          onPressed: () {
-            _onNavigationAnimController.forward();
-            Navigator.of(context)
-                .push(
-              MyPageRoute(
-                transDuation: Duration(milliseconds: 600),
-                builder: (BuildContext context) {
-                  return PlanetDetailsPage(
-                    selected: celestialBody,
-                  );
-                },
-              ),
-            )
-                .then((_) {
-              _onNavigationAnimController.reverse();
-            });
-          },
-        ),
+        SizedBox(height: 10.0)
+        // FlatButton(
+        //   child: Text(
+        //     'Read More',
+        //     style: TextStyle(
+        //       color: Colors.white54,
+        //       decoration: TextDecoration.underline,
+        //     ),
+        //   ),
+        //   onPressed: () {
+        //     _onNavigationAnimController.forward();
+        //     Navigator.of(context)
+        //         .push(
+        //       MyPageRoute(
+        //         transDuation: Duration(milliseconds: 600),
+        //         builder: (BuildContext context) {
+        //           return PlanetDetailsPage(
+        //             selected: celestialBody,
+        //           );
+        //         },
+        //       ),
+        //     )
+        //         .then((_) {
+        //       _onNavigationAnimController.reverse();
+        //     });
+        //   },
+        // ),
       ],
     );
   }
 
-  Container _buildSwipeIndicator(bool swiped) {
-    return Container(
-      width: 5.0,
-      height: 5.0,
-      decoration: BoxDecoration(
-        color: swiped ? Colors.grey : Colors.white,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
+  var address = "";
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-
-    return GestureDetector(
-      onVerticalDragStart: _onVerticalDragStart,
-      onVerticalDragUpdate: _onVerticalDragUpdate,
-      onVerticalDragEnd: _onVerticalDragEnd,
-      child: Material(
-        color: Colors.black,
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            PositionedTransition(
-              rect: _planetRect(screenSize),
-              child: Hero(
-                tag: widget.currentPlanet.name,
-                child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
-              ),
-            ),
-            PositionedTransition(
-              rect: _moonsRect(screenSize),
-              child: _buildMoons(screenSize),
-            ),
-            Positioned(
-              right: -160 + (10.0 * (_swipeAnimController.value)),
-              top: -100,
-              child: IgnorePointer(
-                ignoring: true,
-                child: SlideTransition(
-                  position:
-                      Tween<Offset>(begin: Offset.zero, end: Offset(0.0, 1.0))
-                          .animate(_onNavigationAnimController),
-                  child: ScaleTransition(
-                    scale: Tween<double>(begin: 1.0, end: 1.05)
-                        .animate(_swipeAnimController),
-                    child: Image.asset(
-                      'assets/flare.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+    return Material(
+      color: Colors.black,
+      child: AnimatedBackground(
+          behaviour: RandomParticleBehaviour(
+              options: ParticleOptions(
+                  particleCount: 300,
+                  spawnMaxSpeed: 5.0,
+                  spawnMinSpeed: 1.0,
+                  spawnMaxRadius: 1.5,
+                  spawnMinRadius: 1.0,
+                  baseColor: Colors.white)),
+          vsync: this,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              Positioned(
+                  top: screenSize.width * 0.04,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                          padding:
+                              EdgeInsets.only(left: screenSize.width * 0.04),
+                          child: Text(
+                            '''What are you
+recycling today?''',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                          )),
+                      SizedBox(height: screenSize.width * 0.02),
+                      Padding(
+                          padding:
+                              EdgeInsets.only(left: screenSize.width * 0.04),
+                          child: Text(
+                            'Recycle to save our planet',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal),
+                          )),
+                      SizedBox(height: screenSize.width * 0.04),
+                      Card(
+                        margin: EdgeInsets.only(left: 0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15.0),
+                              bottomRight: Radius.circular(15.0)),
+                        ),
+                        child: Container(
+                            width: screenSize.width * 0.86,
+                            height: screenSize.width * 0.14,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                    flex: 4,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenSize.width * 0.04),
+                                      child: Text(address,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6),
+                                    )),
+                                Expanded(
+                                    child: IconButton(
+                                        icon: Icon(
+                                          Icons.gps_fixed,
+                                          color: Colors.black,
+                                          size: screenSize.width * 0.075,
+                                        ),
+                                        onPressed: () async => updatePlace))
+                              ],
+                            )),
+                      ),
+                      SizedBox(height: screenSize.width * 0.04),
+                      Container(
+                          width: screenSize.width,
+                          child: FadeTransition(
+                            opacity: _slideInAnimController,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                stats('''250
+Plastic'''),
+                                divider(screenSize),
+                                stats('''350
+Metal'''),
+                                divider(screenSize),
+                                stats('''150
+Glass'''),
+                                divider(screenSize),
+                                stats('''450
+Paper'''),
+                              ],
+                            ),
+                          ))
+                    ],
+                  )),
+              PositionedTransition(
+                rect: _planetRect(screenSize),
+                child: Hero(
+                  tag: widget.currentPlanet.name,
+                  child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
                 ),
               ),
-            ),
-            widget.currentPlanet.moons.length > 0
-                ? Positioned(
-                    top: screenSize.height * 0.65,
-                    bottom: screenSize.height * 0.325,
-                    right: 0.0,
-                    left: 0.0,
+              Positioned(
+                  left: screenSize.width * 0.06,
+                  bottom: screenSize.width * 0.65,
+                  child: Container(
+                      height: screenSize.width * 0.4,
+                      width: screenSize.width * 0.4,
+                      child: CircularPercentIndicator(
+                        radius: screenSize.width * .2,
+                        animation: true,
+                        lineWidth: 5.0,
+                        percent: 0.6,
+                        center: Text("60%",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .copyWith(color: Colors.white)),
+                        progressColor: Colors.blueGrey,
+                      ))),
+              Positioned(
+                  right: screenSize.width * 0.1,
+                  bottom: screenSize.width * 0.65,
+                  child: IconButton(
+                      iconSize: screenSize.width * 0.15,
+                      icon: Icon(Icons.camera,
+                          color: Colors.white, size: screenSize.width * 0.15),
+                      onPressed: null)),
+              Positioned(
+                bottom: 0.0,
+                right: screenSize.width * 0.15,
+                left: screenSize.width * 0.15,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: Offset(0.0, 1.0),
+                    end: Offset(0.0, 0.0),
+                  ).animate(_slideInAnimController),
+                  child: FadeTransition(
+                    opacity: _slideInAnimController,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        _buildSwipeIndicator(_swipeAnimController.value < 1.0),
-                        SizedBox(height: 3.0),
-                        _buildSwipeIndicator(_swipeAnimController.value > 0.0),
+                        Hero(
+                          tag: '${widget.currentPlanet.name}heading',
+                          child: Text(
+                            widget.currentPlanet.name.toUpperCase(),
+                            style: Theme.of(context).textTheme.subhead.copyWith(
+                                color: Colors.white, letterSpacing: 10.0),
+                          ),
+                        ),
+                        _descriptionColumn(widget.currentPlanet),
                       ],
                     ),
-                  )
-                : Container(),
-            Positioned(
-              bottom: 0.0,
-              right: screenSize.width * 0.15,
-              left: screenSize.width * 0.15,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: Offset(0.0, 1.0),
-                  end: Offset(0.0, 0.0),
-                ).animate(_slideInAnimController),
-                child: FadeTransition(
-                  opacity: _slideInAnimController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Hero(
-                        tag: '${widget.currentPlanet.name}heading',
-                        child: Text(
-                          widget.currentPlanet.name.toUpperCase(),
-                          style: Theme.of(context).textTheme.subhead.copyWith(
-                              color: Colors.white, letterSpacing: 10.0),
-                        ),
-                      ),
-                      _descriptionColumn(widget.currentPlanet),
-                    ],
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
+              )
+            ],
+          )),
     );
+  }
+
+  void updatePlace() async {
+    setState(() {
+      address = "Loading..";
+    });
+    try {
+      bool _serviceEnabled;
+      PermissionStatus _permissionGranted;
+      LocationData position;
+
+      _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
+          return;
+        }
+      }
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          return;
+        }
+      }
+      position = await location.getLocation();
+      if (kIsWeb) {
+        final resp = jsonDecode((await http.read(
+            'https://geocode.xyz/${position.latitude},${position.longitude}?json=1')));
+        setState(() {
+          address = "${resp['city']}, ${resp['country']}";
+        });
+      } else {
+        final coordinates =
+            new Coordinates(position.latitude, position.longitude);
+
+        var addresses =
+            await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        var first = addresses.first;
+        setState(() {
+          address = "${first.locality}, ${first.countryName}";
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        address = "Error obtaining location";
+      });
+    }
+  }
+
+  Widget stats(String content) {
+    return Text(
+      content,
+      textAlign: TextAlign.center,
+      style:
+          Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.white),
+    );
+  }
+
+  Widget divider(Size screenSize) {
+    return Container(
+        height: screenSize.width * 0.15,
+        child: VerticalDivider(
+          color: Colors.white,
+          thickness: 2,
+          width: screenSize.width * 0.1,
+        ));
   }
 }
