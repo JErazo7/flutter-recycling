@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
-
 import 'model.dart';
 import 'planet_pageh.dart';
 
@@ -45,8 +44,8 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
             children: <Widget>[
               ListView.builder(
                 padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.2,
-                    top: MediaQuery.of(context).size.height * 0.275),
+                    bottom: MediaQuery.of(context).size.height * 0.18,
+                    top: MediaQuery.of(context).size.height * 0.3),
                 itemCount: _drinks.length,
                 scrollDirection: Axis.vertical,
                 controller: _scrollController,
@@ -68,7 +67,8 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
       children: <Widget>[
         SizedBox(),
         Padding(
-          padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.075),
+          padding: EdgeInsets.only(
+              right: MediaQuery.of(context).size.height * 0.075),
           child: Container(
             alignment: Alignment.topRight,
             height: MediaQuery.of(context).size.height * 0.125 / 1.65,
@@ -130,7 +130,7 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
               topRight: Radius.circular(MediaQuery.of(context).size.width / 9)),
         ),
         padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.0125),
-        height: MediaQuery.of(context).size.height * 0.2,
+        height: MediaQuery.of(context).size.height * 0.175,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -146,7 +146,7 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
               "My Points",
               style: TextStyle(
                 color: Colors.black,
-                fontSize: MediaQuery.of(context).size.height * 0.06,
+                fontSize: MediaQuery.of(context).size.height * 0.04,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -154,15 +154,15 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Icon(Icons.star,
-                    color: Colors.green,
+                    color: Colors.yellow[900],
                     size: MediaQuery.of(context).size.height * 0.045),
                 SizedBox(width: 8),
                 Text(
                   "$_earnedPoints",
                   style: TextStyle(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     color: Colors.black,
-                    fontSize: MediaQuery.of(context).size.height * 0.04,
+                    fontSize: MediaQuery.of(context).size.height * 0.035,
                   ),
                 ),
               ],
@@ -209,13 +209,6 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
   }
 }
 
-class AppColors {
-  static Color orangeAccent = Color(0xfff1a35d);
-  static Color orangeAccentLight = Color(0xffff7f33);
-  static Color redAccent = Color(0xfff1a35d);
-  static Color grey = Colors.grey[300];
-}
-
 class Styles {
   static TextStyle text(double size, Color color, bool bold, {double height}) {
     return TextStyle(
@@ -230,7 +223,6 @@ class Styles {
 class RoundedShadow extends StatelessWidget {
   final Widget child;
   final Color shadowColor;
-
   final double topLeftRadius;
   final double topRightRadius;
   final double bottomLeftRadius;
@@ -292,7 +284,7 @@ class LiquidSimulation {
   double time;
   double xOffset = 0;
 
-  final ElasticOutCurve _ease = ElasticOutCurve(.3);
+  final ElasticOutCurve _ease = ElasticOutCurve(.15);
 
   double hzScale;
   double hzOffset;
@@ -368,9 +360,9 @@ class LiquidPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _drawLiquidSim(
-        simulation1, canvas, size, 0, Color(0xffC48D3B).withOpacity(.4));
+        simulation1, canvas, size, 0, Colors.blueGrey[300].withOpacity(.4));
     _drawLiquidSim(
-        simulation2, canvas, size, 5, Color(0xff9D7B32).withOpacity(.4));
+        simulation2, canvas, size, 5, Colors.blueGrey[300].withOpacity(.4));
   }
 
   @override
@@ -404,16 +396,6 @@ class LiquidPainter extends CustomPainter {
     canvas.scale(1 / simulation.hzScale, 1);
   }
 
-  void _drawOffsets(LiquidSimulation simulation, Canvas canvas, Size size) {
-    var floor = size.height;
-    simulation1.endPts.forEach((pt) {
-      canvas.drawCircle(sizeOffset(pt, size), 4, Paint()..color = Colors.red);
-    });
-    simulation1.ctrlPts.forEach((pt) {
-      canvas.drawCircle(sizeOffset(pt, size), 4, Paint()..color = Colors.green);
-    });
-  }
-
   Offset sizeOffset(Offset pt, Size size) {
     return Offset(pt.dx * size.width, waveHeight * pt.dy);
   }
@@ -421,7 +403,7 @@ class LiquidPainter extends CustomPainter {
 
 class DrinkListCard extends StatefulWidget {
   static double nominalHeightClosed = 96;
-  static double nominalHeightOpen = 290;
+  static double nominalHeightOpen = 296;
 
   final Function(DrinkData) onTap;
 
@@ -496,8 +478,7 @@ class _DrinkListCardState extends State<DrinkListCard>
 
     //Determine the points required text value, using the _pointsTween
     var pointsRequired = widget.drinkData.requiredPoints;
-    var pointsValue = pointsRequired -
-        _pointsTween.value * min(widget.earnedPoints, pointsRequired);
+    var pointsValue = _pointsTween.value * (widget.earnedPoints);
     //Determine current fill level, based on _fillTween
     double _maxFillLevel =
     min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
@@ -516,49 +497,48 @@ class _DrinkListCardState extends State<DrinkListCard>
         //Wrap content in a rounded shadow widget, so it will be rounded on the corners but also have a drop shadow
         child: RoundedShadow.fromRadius(
           12,
-          child: Opacity(
-            opacity: 1.0,
-            child: Container(
-              color: Colors.white.withOpacity(0.15),
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  //Background liquid layer
-                  AnimatedOpacity(
-                    opacity: widget.isOpen ? 1 : 0,
-                    duration: Duration(milliseconds: 500),
-                    child: _buildLiquidBackground(_maxFillLevel, fillLevel),
-                  ),
+          child: Container(
+            color: Colors.white.withOpacity(0.15),
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                //Background liquid layer
+                AnimatedOpacity(
+                  opacity: widget.isOpen ? 1 : 0,
+                  duration: Duration(milliseconds: 500),
+                  child: _buildLiquidBackground(_maxFillLevel, fillLevel),
+                ),
 
-                  //Card Content
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                    //Wrap content in a ScrollView, so there's no errors on over scroll.
-                    child: SingleChildScrollView(
-                      //We don't actually want the scrollview to scroll, disable it.
-                      physics: NeverScrollableScrollPhysics(),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 24),
-                          //Top Header Row
-                          _buildTopContent(),
-                          //Spacer
-                          SizedBox(height: 12),
-                          //Bottom Content, use AnimatedOpacity to fade
-                          AnimatedOpacity(
-                            duration: Duration(
-                                milliseconds: widget.isOpen ? 1000 : 500),
-                            curve: Curves.easeOut,
-                            opacity: widget.isOpen ? 1 : 0,
-                            //Bottom Content
-                            child: _buildBottomContent(pointsValue),
-                          ),
-                        ],
-                      ),
+                //Card Content
+                Container(
+                  margin: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.height * 0.0125,
+                      right: MediaQuery.of(context).size.height * 0.025),
+                  //Wrap content in a ScrollView, so there's no errors on over scroll.
+                  child: SingleChildScrollView(
+                    //We don't actually want the scrollview to scroll, disable it.
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 24),
+                        //Top Header Row
+                        _buildTopContent(),
+                        //Spacer
+                        SizedBox(height: 12),
+                        //Bottom Content, use AnimatedOpacity to fade
+                        AnimatedOpacity(
+                          duration: Duration(
+                              milliseconds: widget.isOpen ? 1000 : 500),
+                          curve: Curves.easeOut,
+                          opacity: widget.isOpen ? 1 : 0,
+                          //Bottom Content
+                          child: _buildBottomContent(pointsValue),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -589,73 +569,266 @@ class _DrinkListCardState extends State<DrinkListCard>
 
   Row _buildTopContent() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         //Icon
-        SizedBox(width: 24),
+        SizedBox(width: MediaQuery.of(context).size.height * 0.0125),
         //Label
         Expanded(
-          child: Text(
-            widget.drinkData.title.toUpperCase(),
-            style: Styles.text(18, Colors.white, true),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'DATE RECYCLING LIST',
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              Text(
+                widget.drinkData.date,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
-        //Star Icon
-        Icon(Icons.star, size: 20, color: AppColors.orangeAccent),
-        SizedBox(width: 4),
-        //Points Text
-        Text("${widget.drinkData.requiredPoints}",
-            style: Styles.text(20, Colors.white, true))
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            //Star Icon
+            Icon(
+              Icons.star,
+              size: 20,
+              color: Colors.yellow[900],
+            ),
+            SizedBox(width: 4),
+            //Points Text
+            Text(
+              "${widget.drinkData.requiredPoints}",
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.height * 0.03,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 
   Column _buildBottomContent(double pointsValue) {
-    bool isDisabled = widget.earnedPoints < widget.drinkData.requiredPoints;
-
-    List<Widget> rowChildren = [];
-    if (pointsValue == 0) {
-      rowChildren.add(
-          Text("Congratulations!", style: Styles.text(16, Colors.white, true)));
-    } else {
-      rowChildren.addAll([
-        Text("You're only ", style: Styles.text(12, Colors.white, false)),
-        Text(" ${pointsValue.round()} ",
-            style: Styles.text(16, AppColors.orangeAccent, true)),
-        Text(" points away", style: Styles.text(12, Colors.white, false)),
-      ]);
-    }
-
     return Column(
       children: [
-        //Body Text
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Center(
+              child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Material:',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Glass',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Metal',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Paper',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Plastic',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ]),
+            ),
+            Center(
+              child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Items:',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      "${widget.drinkData.requiredPoints}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "${widget.drinkData.requiredPoints}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "${widget.drinkData.requiredPoints}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "${widget.drinkData.requiredPoints}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ]),
+            ),
+            Center(
+              child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Points: ',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      "${0}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "${0}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "${0}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "${0}",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ]),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.0125 * 2),
+        Text(
+          "Congratulations!",
+          style: TextStyle(
+            fontSize: MediaQuery.of(context).size.height * 0.03,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: rowChildren,
-        ),
-        SizedBox(height: 16),
-        Text(
-          "Redeem your points for a cup of happiness! Our signature espresso is blanced with steamed milk and topped with a light layer of foam. ",
-          textAlign: TextAlign.center,
-          style: Styles.text(14, Colors.white, false, height: 1.5),
-        ),
-        SizedBox(height: 16),
-        //Main Button
-        ButtonTheme(
-          minWidth: 200,
-          height: 40,
-          child: Opacity(
-            opacity: isDisabled ? .6 : 1,
-            child: FlatButton(
-              //Enable the button if we have enough points. Can do this by assigning a onPressed listener, or not.
-              onPressed: isDisabled ? () {} : null,
-              color: AppColors.orangeAccent,
-              disabledColor: AppColors.orangeAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24)),
-              child: Text("REDEEM", style: Styles.text(16, Colors.black, true)),
+          children: <Widget>[
+            Text(
+              "You've received ",
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.height * 0.03,
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+              ),
             ),
-          ),
-        )
+            Text(
+              " ${pointsValue.round()} ",
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.height * 0.03,
+                color: Colors.blue,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              " points!",
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.height * 0.03,
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
+        //Main Button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ButtonTheme(
+              minWidth: MediaQuery.of(context).size.height * 0.225,
+              height: MediaQuery.of(context).size.height * 0.05,
+              child: FlatButton(
+                //Enable the button if we have enough points. Can do this by assigning a onPressed listener, or not.
+                onPressed: null,
+                color: Colors.blue,
+                disabledColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24)),
+                child: Text("OK",
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.03,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -674,27 +847,44 @@ class _DrinkListCardState extends State<DrinkListCard>
 }
 
 class DrinkData {
-  final String title;
+  final String date;
   final int requiredPoints;
 
   DrinkData(
-      this.title,
+      this.date,
       this.requiredPoints,
       );
 }
 
 class DemoData {
   //how many points this user has earned, in a real app this would be loaded from an online service.
-  int earnedPoints = 150;
+  int earnedPoints = 0;
 
   //List of available drinks
   List<DrinkData> drinks = [
-    DrinkData("Coffee", 100),
-    DrinkData("Tea", 150),
-    DrinkData("Latte", 250),
-    DrinkData("Frappuccino", 350),
-    DrinkData("Pressed Juice", 450),
+    DrinkData('25/06/2020', 0),
+    DrinkData('27/06/2020', 0),
+    DrinkData('27/06/2020', 0),
+    DrinkData('27/06/2020', 0),
   ];
 }
 
+class MaterialsData {
+  final String title;
+  final int addPoints;
+
+  MaterialsData(
+      this.title,
+      this.addPoints,
+      );
+}
+
+class Materials {
+  List<MaterialsData> materials = [
+    MaterialsData("Plastic", 40),
+    MaterialsData('Paper', 10),
+    MaterialsData('Glass', 20),
+    MaterialsData('Metal', 30),
+  ];
+}
 
