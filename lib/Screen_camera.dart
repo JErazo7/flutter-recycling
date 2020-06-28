@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:animated_background/animated_background.dart';
+
 
 class ScreenCamera extends StatefulWidget {
   @override
@@ -7,18 +9,27 @@ class ScreenCamera extends StatefulWidget {
   }
 }
 
-class ScreenCameraState extends State<ScreenCamera> {
+class ScreenCameraState extends State<ScreenCamera> with TickerProviderStateMixin{
 
   bool _multiPhotos = false;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+        child: AnimatedBackground(
+        behaviour: RandomParticleBehaviour(
+        options: ParticleOptions(
+        particleCount: 300,
+        spawnMaxSpeed: 5.0,
+        spawnMinSpeed: 1.0,
+        spawnMaxRadius: 1.5,
+        spawnMinRadius: 1.0,
+        baseColor: Colors.white)),
+    vsync: this,
       child: Scaffold(
         body: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          color: Colors.black,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -112,6 +123,7 @@ class ScreenCameraState extends State<ScreenCamera> {
           ),
         ),
       ),
+        ),
     );
   }
 }
