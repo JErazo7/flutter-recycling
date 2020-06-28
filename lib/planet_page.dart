@@ -1,3 +1,4 @@
+import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/model.dart';
 import 'package:geocoder/geocoder.dart';
@@ -112,147 +113,167 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
 
     return Material(
       color: Colors.black,
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Positioned(
-              top: screenSize.width * 0.04,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(left: screenSize.width * 0.04),
-                      child: Text(
-                        '''What are you 
+      child: AnimatedBackground(
+          behaviour: RandomParticleBehaviour(options: ParticleOptions(
+            particleCount: 300,
+            spawnMaxSpeed: 5.0,
+            spawnMinSpeed: 1.0,
+            spawnMaxRadius: 1.5,
+            spawnMinRadius: 1.0,
+            baseColor: Colors.white
+          )),
+          vsync: this,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              Positioned(
+                  top: screenSize.width * 0.04,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                          padding:
+                              EdgeInsets.only(left: screenSize.width * 0.04),
+                          child: Text(
+                            '''What are you 
 recycling today?''',
-                        style: Theme.of(context).textTheme.headline4.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.w600),
-                      )),
-                  SizedBox(height: screenSize.width * 0.02),
-                  Padding(
-                      padding: EdgeInsets.only(left: screenSize.width * 0.04),
-                      child: Text(
-                        'Recycle to save our planet',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.normal),
-                      )),
-                  SizedBox(height: screenSize.width * 0.04),
-                  Card(
-                    margin: EdgeInsets.only(left: 0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(15.0),
-                          bottomRight: Radius.circular(15.0)),
-                    ),
-                    child: Container(
-                        width: screenSize.width * 0.86,
-                        height: screenSize.width * 0.14,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: screenSize.width * 0.04),
-                              child: Text(address,
-                                  style: Theme.of(context).textTheme.headline6),
-                            ),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.gps_fixed,
-                                  color: Colors.black,
-                                  size: screenSize.width * 0.075,
-                                ),
-                                onPressed: () async => updatePlace)
-                          ],
-                        )),
-                  ),
-                  SizedBox(height: screenSize.width * 0.04),
-                  Container(
-                      width: screenSize.width,
-                      child: FadeTransition(
-                        opacity: _slideInAnimController,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            stats('''250
-Plastic'''),
-                            divider(screenSize),
-                            stats('''350
-Metal'''),
-                            divider(screenSize),
-                            stats('''150
-Glass'''),
-                            divider(screenSize),
-                            stats('''450
-Paper'''),
-                          ],
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                          )),
+                      SizedBox(height: screenSize.width * 0.02),
+                      Padding(
+                          padding:
+                              EdgeInsets.only(left: screenSize.width * 0.04),
+                          child: Text(
+                            'Recycle to save our planet',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal),
+                          )),
+                      SizedBox(height: screenSize.width * 0.04),
+                      Card(
+                        margin: EdgeInsets.only(left: 0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15.0),
+                              bottomRight: Radius.circular(15.0)),
                         ),
-                      ))
-                ],
-              )),
-          PositionedTransition(
-            rect: _planetRect(screenSize),
-            child: Hero(
-              tag: widget.currentPlanet.name,
-              child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
-            ),
-          ),
-          Positioned(
-              left: screenSize.width * 0.1,
-              bottom: screenSize.width * 0.45,
-              child: SleekCircularSlider(
-                appearance: CircularSliderAppearance(
-                  infoProperties: InfoProperties(
-                      bottomLabelText: '55%',
-                      bottomLabelStyle: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          .copyWith(color: Colors.white)),
-                  size: screenSize.width * 0.25,
-                ),
-                min: 0,
-                max: 100,
-                initialValue: 58,
-              )),
-          Positioned(
-              right: screenSize.width * 0.1,
-              bottom: screenSize.width * 0.45,
-              child: IconButton(
-                  icon: Icon(Icons.camera,
-                      color: Colors.white, size: screenSize.width * 0.15),
-                  onPressed: null)),
-          Positioned(
-            bottom: 0.0,
-            right: screenSize.width * 0.15,
-            left: screenSize.width * 0.15,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: Offset(0.0, 1.0),
-                end: Offset(0.0, 0.0),
-              ).animate(_slideInAnimController),
-              child: FadeTransition(
-                opacity: _slideInAnimController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Hero(
-                      tag: '${widget.currentPlanet.name}heading',
-                      child: Text(
-                        widget.currentPlanet.name.toUpperCase(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .subhead
-                            .copyWith(color: Colors.white, letterSpacing: 10.0),
+                        child: Container(
+                            width: screenSize.width * 0.86,
+                            height: screenSize.width * 0.14,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: screenSize.width * 0.04),
+                                  child: Text(address,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6),
+                                ),
+                                IconButton(
+                                    icon: Icon(
+                                      Icons.gps_fixed,
+                                      color: Colors.black,
+                                      size: screenSize.width * 0.075,
+                                    ),
+                                    onPressed: () async => updatePlace)
+                              ],
+                            )),
                       ),
-                    ),
-                    _descriptionColumn(widget.currentPlanet),
-                  ],
+                      SizedBox(height: screenSize.width * 0.04),
+                      Container(
+                          width: screenSize.width,
+                          child: FadeTransition(
+                            opacity: _slideInAnimController,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                stats('''250
+Plastic'''),
+                                divider(screenSize),
+                                stats('''350
+Metal'''),
+                                divider(screenSize),
+                                stats('''150
+Glass'''),
+                                divider(screenSize),
+                                stats('''450
+Paper'''),
+                              ],
+                            ),
+                          ))
+                    ],
+                  )),
+              PositionedTransition(
+                rect: _planetRect(screenSize),
+                child: Hero(
+                  tag: widget.currentPlanet.name,
+                  child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
+              Positioned(
+                  left: screenSize.width * 0.1,
+                  bottom: screenSize.width * 0.45,
+                  child: SleekCircularSlider(
+                    appearance: CircularSliderAppearance(
+                      infoProperties: InfoProperties(
+                          bottomLabelText: '55%',
+                          bottomLabelStyle: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              .copyWith(color: Colors.white)),
+                      size: screenSize.width * 0.25,
+                    ),
+                    min: 0,
+                    max: 100,
+                    initialValue: 58,
+                  )),
+              Positioned(
+                  right: screenSize.width * 0.1,
+                  bottom: screenSize.width * 0.45,
+                  child: IconButton(
+                      icon: Icon(Icons.camera,
+                          color: Colors.white, size: screenSize.width * 0.15),
+                      onPressed: null)),
+              Positioned(
+                bottom: 0.0,
+                right: screenSize.width * 0.15,
+                left: screenSize.width * 0.15,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: Offset(0.0, 1.0),
+                    end: Offset(0.0, 0.0),
+                  ).animate(_slideInAnimController),
+                  child: FadeTransition(
+                    opacity: _slideInAnimController,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Hero(
+                          tag: '${widget.currentPlanet.name}heading',
+                          child: Text(
+                            widget.currentPlanet.name.toUpperCase(),
+                            style: Theme.of(context).textTheme.subhead.copyWith(
+                                color: Colors.white, letterSpacing: 10.0),
+                          ),
+                        ),
+                        _descriptionColumn(widget.currentPlanet),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )),
     );
   }
 
