@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/model.dart';
@@ -8,10 +7,9 @@ import 'package:geocoder/geocoder.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:location/location.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import 'celestial_body_widget.dart';
-import 'custom_page_routes.dart';
-import 'planets_details_page.dart';
 
 class PlanetPage extends StatefulWidget {
   final Planet currentPlanet;
@@ -81,32 +79,33 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
             height: 1.5,
           ),
         ),
-        FlatButton(
-          child: Text(
-            'Read More',
-            style: TextStyle(
-              color: Colors.white54,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-          onPressed: () {
-            _onNavigationAnimController.forward();
-            Navigator.of(context)
-                .push(
-              MyPageRoute(
-                transDuation: Duration(milliseconds: 600),
-                builder: (BuildContext context) {
-                  return PlanetDetailsPage(
-                    selected: celestialBody,
-                  );
-                },
-              ),
-            )
-                .then((_) {
-              _onNavigationAnimController.reverse();
-            });
-          },
-        ),
+        SizedBox(height: 10.0)
+        // FlatButton(
+        //   child: Text(
+        //     'Read More',
+        //     style: TextStyle(
+        //       color: Colors.white54,
+        //       decoration: TextDecoration.underline,
+        //     ),
+        //   ),
+        //   onPressed: () {
+        //     _onNavigationAnimController.forward();
+        //     Navigator.of(context)
+        //         .push(
+        //       MyPageRoute(
+        //         transDuation: Duration(milliseconds: 600),
+        //         builder: (BuildContext context) {
+        //           return PlanetDetailsPage(
+        //             selected: celestialBody,
+        //           );
+        //         },
+        //       ),
+        //     )
+        //         .then((_) {
+        //       _onNavigationAnimController.reverse();
+        //     });
+        //   },
+        // ),
       ],
     );
   }
@@ -176,21 +175,25 @@ recycling today?''',
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: screenSize.width * 0.04),
-                                  child: Text(address,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline6),
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.gps_fixed,
-                                      color: Colors.black,
-                                      size: screenSize.width * 0.075,
-                                    ),
-                                    onPressed: () async => updatePlace)
+                                Expanded(
+                                    flex: 4,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenSize.width * 0.04),
+                                      child: Text(address,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6),
+                                    )),
+                                Expanded(
+                                    child: IconButton(
+                                        icon: Icon(
+                                          Icons.gps_fixed,
+                                          color: Colors.black,
+                                          size: screenSize.width * 0.075,
+                                        ),
+                                        onPressed: () async => updatePlace))
                               ],
                             )),
                       ),
@@ -225,26 +228,27 @@ Paper'''),
                   child: CelestialBodyWidget(widget.currentPlanet.vidAssetPath),
                 ),
               ),
-              // Positioned(
-              //     left: 5,
-              //     bottom: 2,
-              //     child: SleekCircularSlider(
-              //       appearance: CircularSliderAppearance(
-              //         infoProperties: InfoProperties(
-              //             bottomLabelText: '55%',
-              //             bottomLabelStyle: Theme.of(context)
-              //                 .textTheme
-              //                 .subtitle1
-              //                 .copyWith(color: Colors.white)),
-              //         size: 10,
-              //       ),
-              //       min: 0,
-              //       max: 100,
-              //       initialValue: 58,
-              //     )),
+              Positioned(
+                  left: screenSize.width * 0.06,
+                  bottom: screenSize.width * 0.65,
+                  child: Container(
+                      height: screenSize.width * 0.4,
+                      width: screenSize.width * 0.4,
+                      child: CircularPercentIndicator(
+                        radius: screenSize.width * .2,
+                        animation: true,
+                        lineWidth: 5.0,
+                        percent: 0.6,
+                        center: Text("60%",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .copyWith(color: Colors.white)),
+                        progressColor: Colors.blueGrey,
+                      ))),
               Positioned(
                   right: screenSize.width * 0.1,
-                  bottom: screenSize.width * 0.45,
+                  bottom: screenSize.width * 0.65,
                   child: IconButton(
                       iconSize: screenSize.width * 0.15,
                       icon: Icon(Icons.camera,
