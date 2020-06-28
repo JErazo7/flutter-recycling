@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'RecycleResumen/recycle_resumen.dart';
 
 import 'astronaut.dart';
 import 'model.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([ DeviceOrientation.portraitUp ]);
     return MaterialApp(
-      home: HomePage(),
+      home: RecycleResumen(),
     );
   }
 }
