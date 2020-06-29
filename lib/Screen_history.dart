@@ -833,7 +833,7 @@ class _DrinkListCardState extends State<DrinkListCard>
               ),
             ),
             Text(
-              " ${pointsValue.round()} ",
+              " ${widget.drinkData.wonPoints.round()} ",
               style: TextStyle(
                 fontSize: MediaQuery.of(context).size.height * 0.03,
                 color: Colors.blue,
