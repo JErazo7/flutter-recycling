@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:animated_background/animated_background.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Smoke_animated.dart';
 import 'model.dart';
-import 'planet_pageh.dart';
+import 'planet_page.dart';
 
 class History extends StatefulWidget {
   @override
@@ -27,20 +29,20 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: AnimatedBackground(
-        behaviour: RandomParticleBehaviour(
-            options: ParticleOptions(
-                particleCount: 300,
-                spawnMaxSpeed: 5.0,
-                spawnMinSpeed: 1.0,
-                spawnMaxRadius: 1.5,
-                spawnMinRadius: 1.0,
-                baseColor: Colors.white)),
-        vsync: this,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Stack(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: AnimatedBackground(
+          behaviour: RandomParticleBehaviour(
+              options: ParticleOptions(
+                  particleCount: 300,
+                  spawnMaxSpeed: 5.0,
+                  spawnMinSpeed: 1.0,
+                  spawnMaxRadius: 1.5,
+                  spawnMinRadius: 1.0,
+                  baseColor: Colors.white)),
+          vsync: this,
+          child: Stack(
             children: <Widget>[
               ListView.builder(
                 padding: EdgeInsets.only(
@@ -53,7 +55,10 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
               ),
               _buildBottomContent(context),
               _planet(context),
-              _buildBackBotton(context),
+              _buildSmoke(context),
+              _buildSmoke1(context),
+              _buildSmoke2(context),
+              _descriptionColumn(context),
             ],
           ),
         ),
@@ -61,38 +66,60 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBackBotton(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildSmoke(context) {
+    return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.055),
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+  Widget _buildSmoke1(context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+  Widget _buildSmoke2(context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+
+  Column _descriptionColumn(context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        SizedBox(),
-        Padding(
-          padding: EdgeInsets.only(
-              right: MediaQuery.of(context).size.height * 0.075),
+        SizedBox(height: 10.0),
+        Center(
           child: Container(
-            alignment: Alignment.topRight,
-            height: MediaQuery.of(context).size.height * 0.125 / 1.65,
-            width: MediaQuery.of(context).size.height * 0.125 / 1.65,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(
-                      MediaQuery.of(context).size.height * 0.125 / 6),
-                  bottomRight: Radius.circular(
-                      MediaQuery.of(context).size.height * 0.125 / 6)),
-            ),
-            child: Center(
-              child: RotatedBox(
-                quarterTurns: 5,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    //TODO: Route navigator back
-                  },
-                ),
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Text(
+              'Earth is the third planet from the Sun and the only astronomical object known to harbor life.',
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 12.0,
+                height: 1.5,
               ),
             ),
           ),
@@ -106,9 +133,11 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
       alignment: Alignment.topCenter,
       child: Container(
         color: Colors.transparent,
-        child: PlanetPageh(
+        child: PlanetPage(
           currentPlanet: Planet(
             name: 'Earth',
+            description:
+            'Earth is the third planet from the Sun and the only astronomical object known to harbor life.',
             color: Colors.blue,
             diameter: 1.0,
             imgAssetPath: 'assets/earth.jpg',
@@ -403,7 +432,7 @@ class LiquidPainter extends CustomPainter {
 
 class DrinkListCard extends StatefulWidget {
   static double nominalHeightClosed = 96;
-  static double nominalHeightOpen = 296;
+  static double nominalHeightOpen = 320;
 
   final Function(DrinkData) onTap;
 
@@ -630,139 +659,136 @@ class _DrinkListCardState extends State<DrinkListCard>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Center(
-              child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Material:',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Glass',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Metal',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Paper',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Plastic',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ]),
+              child: Column(children: <Widget>[
+                Text(
+                  'Material:',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  'Glass',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  'Metal',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  'Paper',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  'Plastic',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ]),
             ),
             Center(
-              child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Items:',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      "${widget.drinkData.requiredPoints}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      "${widget.drinkData.requiredPoints}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      "${widget.drinkData.requiredPoints}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      "${widget.drinkData.requiredPoints}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ]),
+              child: Column(children: <Widget>[
+                Text(
+                  'Items:',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  "${widget.drinkData.requiredPoints}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${widget.drinkData.requiredPoints}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${widget.drinkData.requiredPoints}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${widget.drinkData.requiredPoints}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ]),
             ),
             Center(
-              child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Points: ',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      "${0}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      "${0}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      "${0}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      "${0}",
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ]),
+              child: Column(children: <Widget>[
+                Text(
+                  'Points: ',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  "${0}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${0}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${0}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${0}",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ]),
             ),
           ],
         ),
@@ -887,4 +913,3 @@ class Materials {
     MaterialsData('Metal', 30),
   ];
 }
-
