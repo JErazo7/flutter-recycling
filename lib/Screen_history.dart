@@ -452,7 +452,7 @@ class LiquidPainter extends CustomPainter {
 
 class DrinkListCard extends StatefulWidget {
   static double nominalHeightClosed = 96;
-  static double nominalHeightOpen = 320;
+  static double nominalHeightOpen = 296;
 
   final Function(DrinkData) onTap;
 

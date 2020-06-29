@@ -368,10 +368,6 @@ Paper'''),
                       _onNavigationAnimController.reverse();
 
                     });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => History()));
                   },
                 ),
               ),
