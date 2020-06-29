@@ -26,7 +26,7 @@ class _RecycleResumenState extends State<RecycleResumen>
         centerTitle: true,
         title: Text(
           'Recycled items',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.height*0.035),
         ),
         leading: new IconButton(
           icon: new Icon(

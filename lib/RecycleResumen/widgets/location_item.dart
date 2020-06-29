@@ -16,6 +16,7 @@ class LocationItemState extends State<LocationItem> {
   int _current = 0;
   final List<Widget> imageSliders = imgList.map((item) => Container(
     child: Container(
+      color: Colors.white.withOpacity(0.15),
       margin: EdgeInsets.all(5.0),
       child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),

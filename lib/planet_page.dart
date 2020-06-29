@@ -11,6 +11,7 @@ import 'package:location/location.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'Screen_history.dart';
+import 'Smoke_animated.dart';
 import 'celestial_body_widget.dart';
 import 'custom_page_routes.dart';
 
@@ -80,48 +81,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
     ).animate(_swipeAnimController);
   }
 
-  Column _descriptionColumn(CelestialBody celestialBody) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SizedBox(height: 10.0),
-        Text(
-          celestialBody.description,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          style: TextStyle(
-            color: Colors.white54,
-            fontSize: 12.0,
-            height: 1.5,
-          ),
-        ),
-        FlatButton(
-          child: Text(
-            'Read More',
-            style: TextStyle(
-              color: Colors.white54,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-          onPressed: () {
-            _onNavigationAnimController.forward();
-            Navigator.of(context)
-                .push(
-              MyPageRoute(
-                transDuation: Duration(milliseconds: 600),
-                builder: (BuildContext context) {
-                  return History();
-                },
-              ),
-            )
-                .then((_) {
-              _onNavigationAnimController.reverse();
-            });
-          },
-        ),
-      ],
-    );
-  }
 
   var address = "";
 
@@ -250,15 +209,51 @@ Paper'''),
                       child: CircularPercentIndicator(
                         radius: screenSize.width * .2,
                         animation: true,
+                        animationDuration: 20000,
+                        circularStrokeCap: CircularStrokeCap.butt,
                         lineWidth: 5.0,
                         percent: 0.6,
-                        center: Text("60%",
+                        center: Text("76%",
                             style: Theme.of(context)
                                 .textTheme
                                 .subtitle1
                                 .copyWith(color: Colors.white)),
                         progressColor: Colors.blueGrey,
                       ))),
+              Positioned(
+                bottom: 0.0,
+                right: screenSize.width * 0.15,
+                left: screenSize.width * 0.15,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: Offset(0.0, 1.0),
+                    end: Offset(0.0, 0.0),
+                  ).animate(_slideInAnimController),
+                  child: FadeTransition(
+                    opacity: _slideInAnimController,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Hero(
+                          tag: '${currentPlanet.name}heading',
+                          child: Text(
+                            currentPlanet.name.toUpperCase(),
+                            style: Theme.of(context).textTheme.subhead.copyWith(
+                                color: Colors.white, letterSpacing: 10.0),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height*0.05,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              _buildSmoke(context),
+              _buildSmoke1(context),
+              _buildSmoke2(context),
+              _buildBackBotton(context),
               Positioned(
                   right: screenSize.width * 0.1,
                   bottom: screenSize.width * 0.65,
@@ -282,36 +277,109 @@ Paper'''),
                       });
                     },
                   )),
-              Positioned(
-                bottom: 0.0,
-                right: screenSize.width * 0.15,
-                left: screenSize.width * 0.15,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: Offset(0.0, 1.0),
-                    end: Offset(0.0, 0.0),
-                  ).animate(_slideInAnimController),
-                  child: FadeTransition(
-                    opacity: _slideInAnimController,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Hero(
-                          tag: '${currentPlanet.name}heading',
-                          child: Text(
-                            currentPlanet.name.toUpperCase(),
-                            style: Theme.of(context).textTheme.subhead.copyWith(
-                                color: Colors.white, letterSpacing: 10.0),
-                          ),
-                        ),
-                        _descriptionColumn(currentPlanet),
-                      ],
-                    ),
-                  ),
-                ),
-              )
             ],
           )),
+    );
+  }
+
+  Widget _buildSmoke(context) {
+    return Container(
+      alignment: Alignment.bottomCenter,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.055),
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmoke1(context) {
+    return Container(
+      alignment: Alignment.bottomRight,
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmoke2(context) {
+    return Container(
+      alignment: Alignment.bottomLeft,
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackBotton(context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.height * 0.075),
+          child: Container(
+            alignment: Alignment.topRight,
+            height: MediaQuery.of(context).size.height * 0.125 / 1.65,
+            width: MediaQuery.of(context).size.height * 0.125 / 1.65,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(
+                      MediaQuery.of(context).size.height * 0.125 / 6),
+                  topLeft: Radius.circular(
+                      MediaQuery.of(context).size.height * 0.125 / 6)),
+            ),
+            child: Center(
+              child: RotatedBox(
+                quarterTurns: 15,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                   _onNavigationAnimController.forward();
+                    Navigator.of(context)
+                        .push(
+                      MyPageRoute(
+                        transDuation: Duration(milliseconds: 600),
+                        builder: (BuildContext context) {
+                          return History();
+                        },
+                      ),
+                    )
+                        .then((_) {
+                      _onNavigationAnimController.reverse();
+
+                    });
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => History()));
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(),
+      ],
     );
   }
 

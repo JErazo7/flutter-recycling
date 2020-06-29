@@ -158,13 +158,13 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
 
   Widget _planet(context) {
     return PlanetPageh(
-          currentPlanet: Planet(
-            name: 'Earth',
-            color: Colors.blue,
-            diameter: 1.0,
-            imgAssetPath: 'assets/earth.jpg',
-            vidAssetPath: 'assets/earth.webp',
-          ),
+      currentPlanet: Planet(
+        name: 'Earth',
+        color: Colors.blue,
+        diameter: 1.0,
+        imgAssetPath: 'assets/earth.jpg',
+        vidAssetPath: 'assets/earth.webp',
+      ),
     );
   }
 
@@ -249,7 +249,7 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
         var closedHeight = DrinkListCard.nominalHeightClosed;
         //Calculate scrollTo offset, subtract a bit so we don't end up perfectly at the top
         var offset = selectedIndex *
-                (closedHeight + MediaQuery.of(context).size.height * 0.025) -
+            (closedHeight + MediaQuery.of(context).size.height * 0.025) -
             closedHeight * .35;
         _scrollController.animateTo(offset,
             duration: Duration(milliseconds: 700), curve: Curves.easeOutQuad);
@@ -279,12 +279,12 @@ class RoundedShadow extends StatelessWidget {
 
   const RoundedShadow(
       {Key key,
-      this.shadowColor,
-      this.topLeftRadius = 48,
-      this.topRightRadius = 48,
-      this.bottomLeftRadius = 48,
-      this.bottomRightRadius = 48,
-      this.child})
+        this.shadowColor,
+        this.topLeftRadius = 48,
+        this.topRightRadius = 48,
+        this.bottomLeftRadius = 48,
+        this.bottomRightRadius = 48,
+        this.child})
       : super(key: key);
 
   const RoundedShadow.fromRadius(double radius,
@@ -462,10 +462,10 @@ class DrinkListCard extends StatefulWidget {
 
   const DrinkListCard(
       {Key key,
-      this.drinkData,
-      this.onTap,
-      this.isOpen = false,
-      this.earnedPoints = 100})
+        this.drinkData,
+        this.onTap,
+        this.isOpen = false,
+        this.earnedPoints = 100})
       : super(key: key);
 
   @override
@@ -526,11 +526,11 @@ class _DrinkListCardState extends State<DrinkListCard>
     }
 
     //Determine the points required text value, using the _pointsTween
-    
+
     var pointsValue = _pointsTween.value * (widget.earnedPoints);
     //Determine current fill level, based on _fillTween
     double _maxFillLevel =
-        min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
+    min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
     double fillLevel = _maxFillLevel; //_maxFillLevel * _fillTween.value;
     double cardHeight = widget.isOpen
         ? DrinkListCard.nominalHeightOpen
@@ -659,7 +659,7 @@ class _DrinkListCardState extends State<DrinkListCard>
             SizedBox(width: 4),
             //Points Text
             Text(
-              "${widget.drinkData.requiredPoints}",
+              "${widget.drinkData.wonPoints}",
               style: TextStyle(
                 fontSize: MediaQuery.of(context).size.height * 0.03,
                 color: Colors.white,
@@ -733,7 +733,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.requiredPoints}",
+                  "${widget.drinkData.glass}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -741,7 +741,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.requiredPoints}",
+                  "${widget.drinkData.metal}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -749,7 +749,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.requiredPoints}",
+                  "${widget.drinkData.paper}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -757,7 +757,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.requiredPoints}",
+                  "${widget.drinkData.plastic}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -777,7 +777,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${0}",
+                  "${widget.drinkData.glass*20}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -785,7 +785,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${0}",
+                  "${widget.drinkData.metal*30}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -793,7 +793,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${0}",
+                  "${widget.drinkData.paper*10}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -801,7 +801,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${0}",
+                  "${widget.drinkData.plastic*40}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -895,23 +895,33 @@ class _DrinkListCardState extends State<DrinkListCard>
 class DrinkData {
   final String date;
   final int requiredPoints;
+  final int wonPoints;
+  final int glass;
+  final int metal;
+  final int paper;
+  final int plastic;
 
   DrinkData(
     this.date,
     this.requiredPoints,
+    this.wonPoints,
+    this.glass,
+    this.metal,
+    this.paper,
+    this.plastic,
   );
 }
 
 class DemoData {
   //how many points this user has earned, in a real app this would be loaded from an online service.
-  int earnedPoints = 0;
+  int earnedPoints = 1100;
 
   //List of available drinks
   List<DrinkData> drinks = [
-    DrinkData('25/06/2020', 0),
-    DrinkData('27/06/2020', 0),
-    DrinkData('27/06/2020', 0),
-    DrinkData('27/06/2020', 0),
+    DrinkData('25/06/2020', 2, 150, 0, 1, 0, 3),
+    DrinkData('26/06/2020', 2, 440, 12, 0, 10, 3),
+    DrinkData('27/06/2020', 2, 280,0, 9, 1, 0),
+    DrinkData('28/06/2020', 2, 230,0, 1, 0, 5),
   ];
 }
 
