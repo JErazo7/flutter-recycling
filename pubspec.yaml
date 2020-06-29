@@ -28,7 +28,8 @@ dependencies:
   animated_background: ^1.0.5
   location: ^3.0.2
   http: ^0.12.1
-  
+  carousel_slider: ^2.2.1
+  maps_launcher: ^1.2.0
   percent_indicator: ^2.1.5
 
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animated_background/animated_background.dart';
+import 'package:flutter_recycling/RecycleResumen/recycle_resumen.dart';
+
+import 'custom_page_routes.dart';
 
 class ScreenCamera extends StatefulWidget {
   @override
@@ -98,7 +101,8 @@ class ScreenCameraState extends State<ScreenCamera>
                       ),
                     ),
                     IconButton(
-                      iconSize: MediaQuery.of(context).size.height * 0.125 / 1.65,
+                      iconSize:
+                          MediaQuery.of(context).size.height * 0.125 / 1.65,
                       icon: Icon(
                         Icons.camera,
                         color: Colors.white,
@@ -109,7 +113,8 @@ class ScreenCameraState extends State<ScreenCamera>
                       },
                     ),
                     IconButton(
-                      iconSize: MediaQuery.of(context).size.height * 0.125 / 1.65,
+                      iconSize:
+                          MediaQuery.of(context).size.height * 0.125 / 1.65,
                       icon: _multiPhotos
                           ? Icon(
                               Icons.check_circle_outline,
@@ -126,7 +131,12 @@ class ScreenCameraState extends State<ScreenCamera>
                                   1.65,
                             ),
                       onPressed: () {
-                        //TODO: Take one or more fotos is the _multiPhotos is true
+                        Navigator.of(context).push(MyPageRoute(
+                          transDuation: Duration(milliseconds: 600),
+                          builder: (BuildContext context) {
+                            return RecycleResumen();
+                          },
+                        ));
                         setState(() {
                           if (_multiPhotos == false) {
                             _multiPhotos = true;

@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:animated_background/animated_background.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Smoke_animated.dart';
 import 'model.dart';
 import 'planet_pageh.dart';
 
@@ -53,7 +55,10 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
               ),
               _buildBottomContent(context),
               _planet(context),
-              _buildBackBotton(context),
+              _buildSmoke(context),
+              _buildSmoke1(context),
+              _buildSmoke2(context),
+              _descriptionColumn(context),
             ],
           ),
         ),
@@ -61,38 +66,60 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBackBotton(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildSmoke(context) {
+    return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.055),
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+  Widget _buildSmoke1(context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+  Widget _buildSmoke2(context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Astronaut(),
+        ],
+      ),
+    );
+  }
+
+  Column _descriptionColumn(context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        SizedBox(),
-        Padding(
-          padding: EdgeInsets.only(
-              right: MediaQuery.of(context).size.height * 0.075),
+        SizedBox(height: 10.0),
+        Center(
           child: Container(
-            alignment: Alignment.topRight,
-            height: MediaQuery.of(context).size.height * 0.125 / 1.65,
-            width: MediaQuery.of(context).size.height * 0.125 / 1.65,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(
-                      MediaQuery.of(context).size.height * 0.125 / 6),
-                  bottomRight: Radius.circular(
-                      MediaQuery.of(context).size.height * 0.125 / 6)),
-            ),
-            child: Center(
-              child: RotatedBox(
-                quarterTurns: 5,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    //TODO: Route navigator back
-                  },
-                ),
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Text(
+              'Earth is the third planet from the Sun and the only astronomical object known to harbor life.',
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 12.0,
+                height: 1.5,
               ),
             ),
           ),
@@ -109,6 +136,8 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
         child: PlanetPageh(
           currentPlanet: Planet(
             name: 'Earth',
+            description:
+            'Earth is the third planet from the Sun and the only astronomical object known to harbor life.',
             color: Colors.blue,
             diameter: 1.0,
             imgAssetPath: 'assets/earth.jpg',
@@ -200,7 +229,7 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
         var closedHeight = DrinkListCard.nominalHeightClosed;
         //Calculate scrollTo offset, subtract a bit so we don't end up perfectly at the top
         var offset = selectedIndex *
-                (closedHeight + MediaQuery.of(context).size.height * 0.025) -
+            (closedHeight + MediaQuery.of(context).size.height * 0.025) -
             closedHeight * .35;
         _scrollController.animateTo(offset,
             duration: Duration(milliseconds: 700), curve: Curves.easeOutQuad);
@@ -230,12 +259,12 @@ class RoundedShadow extends StatelessWidget {
 
   const RoundedShadow(
       {Key key,
-      this.shadowColor,
-      this.topLeftRadius = 48,
-      this.topRightRadius = 48,
-      this.bottomLeftRadius = 48,
-      this.bottomRightRadius = 48,
-      this.child})
+        this.shadowColor,
+        this.topLeftRadius = 48,
+        this.topRightRadius = 48,
+        this.bottomLeftRadius = 48,
+        this.bottomRightRadius = 48,
+        this.child})
       : super(key: key);
 
   const RoundedShadow.fromRadius(double radius,
@@ -403,7 +432,7 @@ class LiquidPainter extends CustomPainter {
 
 class DrinkListCard extends StatefulWidget {
   static double nominalHeightClosed = 96;
-  static double nominalHeightOpen = 296;
+  static double nominalHeightOpen = 320;
 
   final Function(DrinkData) onTap;
 
@@ -413,10 +442,10 @@ class DrinkListCard extends StatefulWidget {
 
   const DrinkListCard(
       {Key key,
-      this.drinkData,
-      this.onTap,
-      this.isOpen = false,
-      this.earnedPoints = 100})
+        this.drinkData,
+        this.onTap,
+        this.isOpen = false,
+        this.earnedPoints = 100})
       : super(key: key);
 
   @override
@@ -481,7 +510,7 @@ class _DrinkListCardState extends State<DrinkListCard>
     var pointsValue = _pointsTween.value * (widget.earnedPoints);
     //Determine current fill level, based on _fillTween
     double _maxFillLevel =
-        min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
+    min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
     double fillLevel = _maxFillLevel; //_maxFillLevel * _fillTween.value;
     double cardHeight = widget.isOpen
         ? DrinkListCard.nominalHeightOpen
@@ -848,9 +877,9 @@ class DrinkData {
   final int requiredPoints;
 
   DrinkData(
-    this.date,
-    this.requiredPoints,
-  );
+      this.date,
+      this.requiredPoints,
+      );
 }
 
 class DemoData {
@@ -871,9 +900,9 @@ class MaterialsData {
   final int addPoints;
 
   MaterialsData(
-    this.title,
-    this.addPoints,
-  );
+      this.title,
+      this.addPoints,
+      );
 }
 
 class Materials {
