@@ -45,7 +45,7 @@ class AstronautState extends State<Astronaut> with TickerProviderStateMixin {
             child: Image.asset(
               'assets/spacesmoke.png',
               fit: BoxFit.cover,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withOpacity(0.5),
               width: size,
               height: size,
             ),

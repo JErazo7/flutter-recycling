@@ -12,17 +12,19 @@ class LocationItemProperties extends StatelessWidget {
         margin: EdgeInsets.only(top: 20),
         padding: EdgeInsets.only(top: 20),
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.white.withOpacity(0.15),
             borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
             border: Border.all(
                 color: Colors.black12
             )
         ),
-        height: 400,
+        height:  MediaQuery.of(context).size.height*0.35,
         width: double.infinity,
         child: Column(
           children: [
             Container(
+              color: Colors.white.withOpacity(0.15),
+
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: FittedBox(
                 fit: BoxFit.contain,
@@ -31,12 +33,14 @@ class LocationItemProperties extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
-                      fontSize: 30
+                      fontSize:  MediaQuery.of(context).size.height*0.06
                   ),
                 ),
               ),
             ),
             Container(
+              color: Colors.white.withOpacity(0.15),
+
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               alignment: Alignment.centerLeft,
               child: FittedBox(
@@ -45,12 +49,14 @@ class LocationItemProperties extends StatelessWidget {
                   'Address',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20
+                      fontSize:  MediaQuery.of(context).size.height*0.04
                   ),
                 ),
               ),
             ),
             Container(
+              color: Colors.white.withOpacity(0.15),
+
               height: 150,
               padding: EdgeInsets.all(20),
               child: FittedBox(
@@ -58,14 +64,16 @@ class LocationItemProperties extends StatelessWidget {
                 child: Text(
                   locationData.address,
                   style: TextStyle(
-                      fontSize: 15
+                      fontSize:  MediaQuery.of(context).size.height*0.035
                   ),
                 ),
               ),
             ),
             Container(
-                height: 50,
-                width: 150,
+                color: Colors.white.withOpacity(0.15),
+
+                height:  MediaQuery.of(context).size.height*0.075,
+                width:  MediaQuery.of(context).size.height*0.225,
                 margin: EdgeInsets.symmetric(horizontal: 20 ),
                 child: Material(
                   borderRadius:  BorderRadius.only(topRight: Radius.circular(15), bottomLeft: Radius.circular(15)),

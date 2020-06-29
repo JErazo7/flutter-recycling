@@ -6,11 +6,11 @@ class GridCenter extends StatelessWidget {
     final numStyle = TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.bold,
-      fontSize: 30
+      fontSize: MediaQuery.of(context).size.height*0.035
     );
 
     return Container(
-      padding: EdgeInsets.fromLTRB(60, 0, 60, 120),
+      padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height*0.05, 0, MediaQuery.of(context).size.height*0.05, MediaQuery.of(context).size.height*0.1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -40,7 +40,7 @@ class GridCenter extends StatelessWidget {
              ),
               Container(
                 width: 1,
-                height: 50,
+                height: MediaQuery.of(context).size.height*0.075,
                 color: Colors.grey,
               ),
               Material(
@@ -66,12 +66,12 @@ class GridCenter extends StatelessWidget {
               Container(
                 color: Colors.grey,
                 height: 1,
-                width: 90,
+                width: MediaQuery.of(context).size.height*0.12,
               ),
               Container(
                 color: Colors.grey,
                 height: 1,
-                width: 90,
+                width:  MediaQuery.of(context).size.height*0.12,
               )
             ],
           ),
@@ -94,7 +94,7 @@ class GridCenter extends StatelessWidget {
               ),
               Container(
                 width: 1,
-                height: 50,
+                height:  MediaQuery.of(context).size.height*0.08,
                 color: Colors.grey,
               ),
               Material(

@@ -29,7 +29,7 @@ class _WhereRecycleState extends State<WhereRecycle> {
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 30),
+                          fontSize: MediaQuery.of(context).size.height*0.035),
                     ),
                     Icon(
                       Icons.map,
