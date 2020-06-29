@@ -45,7 +45,7 @@ class _PlanetPagehState extends State<PlanetPageh> with TickerProviderStateMixin
 
   Animation<RelativeRect> _planetRect(Size screen) {
     return RelativeRectTween(
-      begin: RelativeRect.fromLTRB(-40.0, 0.0, -50.0, screen.height*0.7),
+      begin: RelativeRect.fromLTRB(-50.0, 0.0, -50.0, screen.height*0.7),
       end: RelativeRect.fromLTRB(-50.0,screen.height * 0.3 , -50.0, screen.height * 0.7),
     ).animate(_swipeAnimController);
   }
