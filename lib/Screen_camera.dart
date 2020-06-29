@@ -13,7 +13,13 @@ class ScreenCamera extends StatefulWidget {
 
 class ScreenCameraState extends State<ScreenCamera>
     with TickerProviderStateMixin {
-  bool _multiPhotos = false;
+  int pos = 0;
+  List<MaterialModel> photos = [
+    MaterialModel('Glass', 'Place in green bin', 'assets/vaso.jpg!d'),
+    MaterialModel('Plastic', 'Place in green bin', 'assets/plastico.jpg'),
+    MaterialModel('Metal', 'Place in green bin', 'assets/cadena.jpg!d'),
+    MaterialModel('Paper', 'Place in green bin', 'assets/papel.JPG')
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,67 +43,50 @@ class ScreenCameraState extends State<ScreenCamera>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(
-                            MediaQuery.of(context).size.width / 9),
-                        bottomRight: Radius.circular(
-                            MediaQuery.of(context).size.width / 9)),
-                    color: Colors.blue,
-                  ),
-                  child: Camera(),
+                Camera(
+                  photo: photos[pos].image,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        //TODO: Add Route navigator
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height * 0.0125),
-                        height: MediaQuery.of(context).size.height * 0.125,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(
-                                  MediaQuery.of(context).size.height *
-                                      0.125 /
-                                      3),
-                              bottomRight: Radius.circular(
-                                  MediaQuery.of(context).size.height *
-                                      0.125 /
-                                      3)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Glass',
-                              style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.035,
-                                fontWeight: FontWeight.w600,
-                              ),
+                    Container(
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.0125),
+                      height: MediaQuery.of(context).size.height * 0.125,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(
+                                MediaQuery.of(context).size.height * 0.125 / 3),
+                            bottomRight: Radius.circular(
+                                MediaQuery.of(context).size.height *
+                                    0.125 /
+                                    3)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            photos[pos].name,
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.035,
+                              fontWeight: FontWeight.w600,
                             ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.0125,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.0125,
+                          ),
+                          Text(
+                            photos[pos].site,
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.025,
+                              fontWeight: FontWeight.w300,
                             ),
-                            Text(
-                              'Place in green bin',
-                              style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.025,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     IconButton(
@@ -109,27 +98,19 @@ class ScreenCameraState extends State<ScreenCamera>
                         size: MediaQuery.of(context).size.height * 0.125 / 1.65,
                       ),
                       onPressed: () {
-                        //TODO: Add a new Photo
+                        setState(() {
+                          pos = pos == 3 ? 0 : pos + 1;
+                        });
                       },
                     ),
                     IconButton(
                       iconSize:
                           MediaQuery.of(context).size.height * 0.125 / 1.65,
-                      icon: _multiPhotos
-                          ? Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.white,
-                              size: MediaQuery.of(context).size.height *
-                                  0.125 /
-                                  1.65,
-                            )
-                          : Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: MediaQuery.of(context).size.height *
-                                  0.125 /
-                                  1.65,
-                            ),
+                      icon: Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.height * 0.125 / 1.65,
+                      ),
                       onPressed: () {
                         Navigator.of(context).push(MyPageRoute(
                           transDuation: Duration(milliseconds: 600),
@@ -137,13 +118,6 @@ class ScreenCameraState extends State<ScreenCamera>
                             return RecycleResumen();
                           },
                         ));
-                        setState(() {
-                          if (_multiPhotos == false) {
-                            _multiPhotos = true;
-                          } else {
-                            _multiPhotos = false;
-                          }
-                        });
                       },
                     ),
                     SizedBox(
@@ -159,21 +133,29 @@ class ScreenCameraState extends State<ScreenCamera>
   }
 }
 
-class Camera extends StatefulWidget {
-  @override
-  CameraState createState() {
-    return CameraState();
-  }
-}
+class Camera extends StatelessWidget {
+  final String photo;
 
-class CameraState extends State<Camera> {
+  const Camera({Key key, this.photo}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         Container(
-            //TODO: implement the API for the camera device
-            ),
+          height: MediaQuery.of(context).size.height * 0.75,
+          width: MediaQuery.of(context).size.width,
+          child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                  bottomLeft:
+                      Radius.circular(MediaQuery.of(context).size.width / 9),
+                  bottomRight:
+                      Radius.circular(MediaQuery.of(context).size.width / 9)),
+              child: Image.asset(
+                photo,
+                fit: BoxFit.cover,
+              )),
+        ),
         Column(
           children: <Widget>[
             SizedBox(
@@ -204,55 +186,15 @@ class CameraState extends State<Camera> {
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(
-                  MediaQuery.of(context).size.height * 0.125 / 4),
-              width: MediaQuery.of(context).size.height * 0.06 * 2,
-              height: MediaQuery.of(context).size.height * 0.06 * 4,
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(
-                    Radius.circular(MediaQuery.of(context).size.height * 0.03)),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(
-                  MediaQuery.of(context).size.height * 0.125 / 3.5),
-              width: MediaQuery.of(context).size.height * 0.06 * 2,
-              height: MediaQuery.of(context).size.height * 0.06 * 4,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                    Radius.circular(MediaQuery.of(context).size.height * 0.03)),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(
-                  MediaQuery.of(context).size.height * 0.125 / 3),
-              width: MediaQuery.of(context).size.height * 0.06 * 2,
-              height: MediaQuery.of(context).size.height * 0.06 * 4,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(
-                    Radius.circular(MediaQuery.of(context).size.height * 0.03)),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
+}
+
+class MaterialModel {
+  final name;
+  final site;
+  final image;
+
+  MaterialModel(this.name, this.site, this.image);
 }

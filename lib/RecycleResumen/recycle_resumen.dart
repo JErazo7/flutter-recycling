@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recycling/RecycleResumen/widgets/where_recycle.dart';
+import 'package:flutter_recycling/planet_page.dart';
 import 'widgets/grid_center.dart';
 import 'package:animated_background/animated_background.dart';
 
@@ -22,9 +23,22 @@ class _RecycleResumenState extends State<RecycleResumen>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        centerTitle: true,
         title: Text(
           'Recycled items',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
+        leading: new IconButton(
+          icon: new Icon(
+            Icons.close,
+            size: MediaQuery.of(context).size.width * 0.09,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PlanetPage()),
+            );
+          },
         ),
       ),
       backgroundColor: Colors.black,
@@ -56,7 +70,12 @@ class _RecycleResumenState extends State<RecycleResumen>
                       Expanded(flex: 4, child: GridCenter()),
                     ],
                   ),
-                  WhereRecycle()
+                  Positioned(
+                      bottom: 0,
+                      child: Container(
+                          height: 0.17 * MediaQuery.of(context).size.width,
+                          width: MediaQuery.of(context).size.width,
+                          child: WhereRecycle()))
                 ],
               ))),
     );

@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import '../../Screen_camera.dart';
+
 class CarouselWithIndicatorDemo extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -19,7 +21,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
           child: Stack(
             children: <Widget>[
-              Image.network(item.image, fit: BoxFit.cover, width: 1000.0),
+              Image.asset(item.image, fit: BoxFit.cover, width: 1000.0),
               Positioned(
                 bottom: 0.0,
                 left: 0.0,
@@ -95,15 +97,10 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
   }
 }
 
-final List<ImageObject> imgList = [
-  ImageObject('Plastico', 'https://ichef.bbci.co.uk/news/410/cpsprodpb/C6DF/production/_97011905_gettyimages-103583960-1.jpg'),
-  ImageObject('Metal', 'https://previews.123rf.com/images/monticello/monticello1504/monticello150400018/39146029-basura-reciclable-que-consiste-en-vidrio-pl%C3%A1stico-metal-y-papel-aisladas-sobre-fondo-blanco.jpg',),
-  ImageObject('Papel', 'https://i.ytimg.com/vi/f9BINEPtCoA/hqdefault.jpg',)
-];
-
-class ImageObject {
-  final String name;
-  final String image;
-
-  ImageObject(this.name, this.image);
-}
+final
+List<MaterialModel> imgList = [
+    MaterialModel('Glass', 'Place in green bin', 'assets/vaso.jpg!d'),
+    MaterialModel('Plastic', 'Place in green bin', 'assets/plastico.jpg'),
+    MaterialModel('Metal', 'Place in green bin', 'assets/cadena.jpg!d'),
+    MaterialModel('Paper', 'Place in green bin', 'assets/papel.JPG')
+  ];
