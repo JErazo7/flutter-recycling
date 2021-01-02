@@ -22,8 +22,7 @@ class _PlanetWidgetState extends State<PlanetWidget>
   @override
   void initState() {
     super.initState();
-    _rotationController =
-        AnimationController(duration: Duration(seconds: 4), vsync: this);
+    _rotationController = AnimationController(duration: Duration(seconds: 4));
   }
 
   @override

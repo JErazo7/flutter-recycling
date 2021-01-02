@@ -12,7 +12,7 @@ class CelestialBodyWidget extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: <Color>[
+          List: <Color>[
             Colors.transparent,
             Colors.black45,
             Colors.black.withOpacity(0.65),

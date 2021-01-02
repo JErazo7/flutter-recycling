@@ -11,9 +11,9 @@ class CelestialBodyWidgeth extends StatelessWidget {
       child: Container(
         foregroundDecoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomCenter ,
+            begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            colors: <Color>[
+            List: <Color>[
               Colors.transparent,
               Colors.black45,
               Colors.black.withOpacity(0.65),

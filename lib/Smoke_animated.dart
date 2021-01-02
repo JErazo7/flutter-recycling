@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-
 class Astronaut extends StatefulWidget {
-
   @override
   AstronautState createState() {
     return new AstronautState();
@@ -12,15 +10,12 @@ class Astronaut extends StatefulWidget {
 class AstronautState extends State<Astronaut> with TickerProviderStateMixin {
   AnimationController _smokeAnimController;
 
-
   @override
   void initState() {
     super.initState();
-    _smokeAnimController =
-        AnimationController(duration: Duration(seconds: 35), vsync: this);
+    _smokeAnimController = AnimationController(duration: Duration(seconds: 35));
     _smokeAnimController.repeat();
   }
-
 
   @override
   void dispose() {
@@ -30,10 +25,7 @@ class AstronautState extends State<Astronaut> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final double size = MediaQuery
-        .of(context)
-        .size
-        .width * 0.55;
+    final double size = MediaQuery.of(context).size.width * 0.55;
     return Container(
       width: size,
       height: size,
@@ -55,6 +47,3 @@ class AstronautState extends State<Astronaut> with TickerProviderStateMixin {
     );
   }
 }
-
-
-

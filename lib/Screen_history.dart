@@ -20,11 +20,10 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
   int _earnedPoints;
   AnimationController _onNavigationAnimController;
 
-
   @override
   void initState() {
     _onNavigationAnimController =
-        AnimationController(duration: Duration(milliseconds: 600), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 600));
     var demoData = DemoData();
     _drinks = demoData.drinks;
     _earnedPoints = demoData.earnedPoints;
@@ -249,7 +248,7 @@ class HistoryState extends State<History> with TickerProviderStateMixin {
         var closedHeight = DrinkListCard.nominalHeightClosed;
         //Calculate scrollTo offset, subtract a bit so we don't end up perfectly at the top
         var offset = selectedIndex *
-            (closedHeight + MediaQuery.of(context).size.height * 0.025) -
+                (closedHeight + MediaQuery.of(context).size.height * 0.025) -
             closedHeight * .35;
         _scrollController.animateTo(offset,
             duration: Duration(milliseconds: 700), curve: Curves.easeOutQuad);
@@ -279,12 +278,12 @@ class RoundedShadow extends StatelessWidget {
 
   const RoundedShadow(
       {Key key,
-        this.shadowColor,
-        this.topLeftRadius = 48,
-        this.topRightRadius = 48,
-        this.bottomLeftRadius = 48,
-        this.bottomRightRadius = 48,
-        this.child})
+      this.shadowColor,
+      this.topLeftRadius = 48,
+      this.topRightRadius = 48,
+      this.bottomLeftRadius = 48,
+      this.bottomRightRadius = 48,
+      this.child})
       : super(key: key);
 
   const RoundedShadow.fromRadius(double radius,
@@ -462,10 +461,10 @@ class DrinkListCard extends StatefulWidget {
 
   const DrinkListCard(
       {Key key,
-        this.drinkData,
-        this.onTap,
-        this.isOpen = false,
-        this.earnedPoints = 100})
+      this.drinkData,
+      this.onTap,
+      this.isOpen = false,
+      this.earnedPoints = 100})
       : super(key: key);
 
   @override
@@ -486,8 +485,8 @@ class _DrinkListCardState extends State<DrinkListCard>
   @override
   void initState() {
     //Create a controller to drive the "fill" animations
-    _liquidSimController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 3000));
+    _liquidSimController =
+        AnimationController(duration: Duration(milliseconds: 3000));
     _liquidSimController.addListener(_rebuildIfOpen);
     //create tween to raise the fill level of the card
     _fillTween = Tween<double>(begin: 0, end: 1).animate(
@@ -530,7 +529,7 @@ class _DrinkListCardState extends State<DrinkListCard>
     var pointsValue = _pointsTween.value * (widget.earnedPoints);
     //Determine current fill level, based on _fillTween
     double _maxFillLevel =
-    min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
+        min(1, widget.earnedPoints / widget.drinkData.requiredPoints);
     double fillLevel = _maxFillLevel; //_maxFillLevel * _fillTween.value;
     double cardHeight = widget.isOpen
         ? DrinkListCard.nominalHeightOpen
@@ -777,7 +776,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.glass*20}",
+                  "${widget.drinkData.glass * 20}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -785,7 +784,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.metal*30}",
+                  "${widget.drinkData.metal * 30}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -793,7 +792,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.paper*10}",
+                  "${widget.drinkData.paper * 10}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -801,7 +800,7 @@ class _DrinkListCardState extends State<DrinkListCard>
                   ),
                 ),
                 Text(
-                  "${widget.drinkData.plastic*40}",
+                  "${widget.drinkData.plastic * 40}",
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.03,
                     color: Colors.white,
@@ -920,8 +919,8 @@ class DemoData {
   List<DrinkData> drinks = [
     DrinkData('25/06/2020', 2, 150, 0, 1, 0, 3),
     DrinkData('26/06/2020', 2, 440, 12, 0, 10, 3),
-    DrinkData('27/06/2020', 2, 280,0, 9, 1, 0),
-    DrinkData('28/06/2020', 2, 230,0, 1, 0, 5),
+    DrinkData('27/06/2020', 2, 280, 0, 9, 1, 0),
+    DrinkData('28/06/2020', 2, 230, 0, 1, 0, 5),
   ];
 }
 

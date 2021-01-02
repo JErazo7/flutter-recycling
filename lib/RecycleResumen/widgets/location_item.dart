@@ -13,40 +13,36 @@ class LocationItem extends StatefulWidget {
 }
 
 class LocationItemState extends State<LocationItem> {
-  int _current = 0;
-  final List<Widget> imageSliders = imgList.map((item) => Container(
-    child: Container(
-      color: Colors.white.withOpacity(0.15),
-      margin: EdgeInsets.all(5.0),
-      child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          child: Stack(
-            children: <Widget>[
-              Image.network(item, fit: BoxFit.cover, width: 1000.0),
-            ],
-          )
-      ),
-    ),
-  )).toList();
+  final List<Widget> imageSliders = imgList
+      .map((item) => Container(
+            child: Container(
+              color: Colors.white.withOpacity(0.15),
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                    ],
+                  )),
+            ),
+          ))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CarouselSlider(
-            items: imageSliders,
-            options: CarouselOptions(
-                autoPlay: false,
-                enlargeCenterPage: true,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  widget.properties(index);
-                }
-            ),
-          )
-        ]
-    );
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      CarouselSlider(
+        items: imageSliders,
+        options: CarouselOptions(
+            autoPlay: false,
+            enlargeCenterPage: true,
+            aspectRatio: 2.0,
+            onPageChanged: (index, reason) {
+              widget.properties(index);
+            }),
+      )
+    ]);
   }
 }
 

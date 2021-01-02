@@ -52,17 +52,19 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
     location = new Location();
     updatePlace();
     _swipeAnimController =
-        AnimationController(duration: Duration(milliseconds: 600), vsync: this)
+        AnimationController(duration: Duration(milliseconds: 600))
           ..addListener(() {
             setState(() {});
           });
 
-    _slideInAnimController =
-        AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+    _slideInAnimController = AnimationController(
+      duration: Duration(milliseconds: 800),
+    );
 
     _slideInAnimController.forward();
-    _onNavigationAnimController =
-        AnimationController(duration: Duration(milliseconds: 600), vsync: this);
+    _onNavigationAnimController = AnimationController(
+      duration: Duration(milliseconds: 600),
+    );
   }
 
   @override
@@ -80,7 +82,6 @@ class PlanetPageState extends State<PlanetPage> with TickerProviderStateMixin {
       end: RelativeRect.fromLTRB(-50.0, screen.height, -50.0, -screen.height),
     ).animate(_swipeAnimController);
   }
-
 
   var address = "";
 
@@ -238,12 +239,15 @@ Paper'''),
                           tag: '${currentPlanet.name}heading',
                           child: Text(
                             currentPlanet.name.toUpperCase(),
-                            style: Theme.of(context).textTheme.subhead.copyWith(
-                                color: Colors.white, letterSpacing: 10.0),
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .copyWith(
+                                    color: Colors.white, letterSpacing: 10.0),
                           ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height*0.05,
+                          height: MediaQuery.of(context).size.height * 0.05,
                         ),
                       ],
                     ),
@@ -285,7 +289,8 @@ Paper'''),
   Widget _buildSmoke(context) {
     return Container(
       alignment: Alignment.bottomCenter,
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.055),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.055),
       width: MediaQuery.of(context).size.width,
       color: Colors.transparent,
       child: Row(
@@ -331,8 +336,8 @@ Paper'''),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.height * 0.075),
+          padding:
+              EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.075),
           child: Container(
             alignment: Alignment.topRight,
             height: MediaQuery.of(context).size.height * 0.125 / 1.65,
@@ -354,7 +359,7 @@ Paper'''),
                     color: Colors.black,
                   ),
                   onPressed: () {
-                   _onNavigationAnimController.forward();
+                    _onNavigationAnimController.forward();
                     Navigator.of(context)
                         .push(
                       MyPageRoute(
@@ -366,7 +371,6 @@ Paper'''),
                     )
                         .then((_) {
                       _onNavigationAnimController.reverse();
-
                     });
                   },
                 ),

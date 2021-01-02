@@ -12,27 +12,27 @@ class PlanetPageh extends StatefulWidget {
   }
 }
 
-class _PlanetPagehState extends State<PlanetPageh> with TickerProviderStateMixin {
+class _PlanetPagehState extends State<PlanetPageh>
+    with TickerProviderStateMixin {
   AnimationController _swipeAnimController;
   AnimationController _slideInAnimController;
   AnimationController _onNavigationAnimController;
-
 
   @override
   void initState() {
     super.initState();
     _swipeAnimController =
-    AnimationController(duration: Duration(milliseconds: 600), vsync: this)
-      ..addListener(() {
-        setState(() {});
-      });
+        AnimationController(duration: Duration(milliseconds: 600))
+          ..addListener(() {
+            setState(() {});
+          });
 
     _slideInAnimController =
-        AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 800));
 
     _slideInAnimController.forward();
     _onNavigationAnimController =
-        AnimationController(duration: Duration(milliseconds: 600), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 600));
   }
 
   @override
@@ -45,8 +45,9 @@ class _PlanetPagehState extends State<PlanetPageh> with TickerProviderStateMixin
 
   Animation<RelativeRect> _planetRect(Size screen) {
     return RelativeRectTween(
-      begin: RelativeRect.fromLTRB(-50.0, 0.0, -50.0, screen.height*0.7),
-      end: RelativeRect.fromLTRB(-50.0,screen.height * 0.3 , -50.0, screen.height * 0.7),
+      begin: RelativeRect.fromLTRB(-50.0, 0.0, -50.0, screen.height * 0.7),
+      end: RelativeRect.fromLTRB(
+          -50.0, screen.height * 0.3, -50.0, screen.height * 0.7),
     ).animate(_swipeAnimController);
   }
 
@@ -54,11 +55,11 @@ class _PlanetPagehState extends State<PlanetPageh> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     return PositionedTransition(
-          rect: _planetRect(screenSize),
-          child: Hero(
-            tag: widget.currentPlanet.name,
-            child: CelestialBodyWidgeth(widget.currentPlanet.vidAssetPath),
-          ),
+      rect: _planetRect(screenSize),
+      child: Hero(
+        tag: widget.currentPlanet.name,
+        child: CelestialBodyWidgeth(widget.currentPlanet.vidAssetPath),
+      ),
     );
   }
 }

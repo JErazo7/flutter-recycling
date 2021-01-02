@@ -79,7 +79,7 @@ class PlanetDetailsPageState extends State<PlanetDetailsPage>
                 widget.selected.name.toUpperCase(),
                 style: Theme.of(context)
                     .textTheme
-                    .subhead
+                    .subtitle1
                     .copyWith(color: Colors.white, letterSpacing: 10.0),
               ),
             ),
@@ -212,7 +212,7 @@ class InfoTabs extends StatelessWidget {
         ),
         Text(
           '$subHeading',
-          style: Theme.of(context).textTheme.title,
+          style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(height: 30.0),
         Text(
